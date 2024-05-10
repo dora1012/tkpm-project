@@ -56,11 +56,11 @@ const Navbar = () => {
 
             <ul className="menu flex gap-5">
                 <li>
-                    <Link to="/" ref={feature1Ref} className="relative flex items-center gap-1 hover:text-crimson delay-0" onClick={()=> setListOpen(!listOpen)}>
+                    <div ref={feature1Ref} className="relative flex items-center gap-1 cursor-pointer hover:text-crimson delay-0" onClick={()=> setListOpen(!listOpen)}>
                         {listIcon}
                         Danh sách
                         {arrowDown}
-                    </Link>
+                    </div>
                     {
                        listOpen && <div ref={listRef} className="absolute border border-smoke rounded-lg bg-white">
                         {
@@ -96,11 +96,11 @@ const Navbar = () => {
                     }
                 </li>
                 <li>
-                    <Link to="/" ref={feature2Ref} className="relative flex items-center gap-1 hover:text-crimson delay-0" onClick={()=> setTypeOpen(!typeOpen)}>
+                    <div ref={feature2Ref} className="relative flex items-center gap-1 hover:text-crimson delay-0 cursor-pointer" onClick={()=> setTypeOpen(!typeOpen)}>
                         {listIcon}
                         Thể loại
                         {arrowDown}
-                    </Link>
+                    </div>
                     {
                        typeOpen && <div ref={typeRef} className="absolute border border-smoke rounded-lg bg-white">
                         {
@@ -135,11 +135,11 @@ const Navbar = () => {
                        </div>
                     }
                 </li><li>
-                    <Link to="/" ref={feature3Ref} className="relative flex items-center gap-1 hover:text-crimson delay-0" onClick={()=> setClassifyOpen(!classifyOpen)}>
+                    <div ref={feature3Ref} className="relative flex items-center gap-1 hover:text-crimson delay-0 cursor-pointer" onClick={()=> setClassifyOpen(!classifyOpen)}>
                         {listIcon}
                         Phân loại theo chương
                         {arrowDown}
-                    </Link>
+                    </div>
                     {
                        classifyOpen && <div ref={classifyRef} className="absolute border border-smoke rounded-lg bg-white">
                         {
