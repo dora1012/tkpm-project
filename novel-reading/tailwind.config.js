@@ -15,9 +15,11 @@ export default {
           'teal': '#28DBD0',
           'dark-cyan': '#008B8B',
           'smoke': '#848884',
-          'coral': '#F88379',
+          'coral-pink': '#F88379',
           'flamingo': '#FC8EAC',
-          'crimson': '#E32636'
+          'crimson': '#E32636',
+          'salmon': '#FF8C69',
+          'coral-pink1': '#f87979'
       },
 
       fontSize: {
