@@ -14,7 +14,7 @@ const novelInfoPage = () => {
     }
     return (
         <div >
-            <div className="bg-crimson">
+            <div className="bg-coral-pink">
                 <div className="container w-9/12 mx-auto flex gap-20  px-20 py-20 bg-white">
                     <img src={novel.img} alt="Cover" className="h-[310px] w-[220px] object-cover" />
                     <div className="book-info flex flex-col flex-wrap gap-7">
@@ -38,7 +38,7 @@ const novelInfoPage = () => {
                     <p className="font-semibold text-4xl mb-3">Danh sách chương:</p>
                     <div className="chapter-list mt-5 columns-2 w-10/12">
                         {novel.chapterList.map(chapter => (
-                            <a href={`/${slugify(novel.title)}/${slugify('Chương ' + chapter.chapterNumber)}`} key={chapter.chapterNumber} className="mb-5 break-inside-avoid block hover:text-crimson">
+                            <a href={`/${slugify(novel.title)}/${slugify('Chương ' + chapter.chapterNumber)}`} key={chapter.chapterNumber} className="mb-5 break-inside-avoid block hover:text-coral-pink">
                                 <strong>Chương {chapter.chapterNumber}: {chapter.title}</strong>
                                 {/* <p>{chapter.summary}</p> */}
                             </a>

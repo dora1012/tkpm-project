@@ -11,7 +11,7 @@ const trendingNovelSideBar = () => {
                     <li key={novel.id} className="px-4 py-2 border-b border-grey flex items-center hover:bg-grey">
                         <span className={`text-lg font-bold mr-2 ${index < 3 ? 'text-red-500' : 'text-gray-500'}`}>{index + 1}</span>
                         <a href={`/${slugify(novel.title)}`}>
-                            <h4 className="font-bold text-crimson">{novel.title}</h4>
+                            <h4 className="font-bold text-coral-pink">{novel.title}</h4>
                             <p className="text-sm text-gray-600">{novel.categories}</p>
                         </a>
                     </li>
