@@ -13,14 +13,14 @@ const trendingNovel = () => {
             </div>
             {/*Cards*/}
             <div>
-                <div className='ml-20 grid grid-cols-2 sm:grid-cols-7 gap-2'>
+                <div className='ml-20 grid grid-cols-2 sm:grid-cols-6 gap-2'>
                     {
                         NovelData.map((novel)=>(
-                            <a href={`/${slugify(novel.title)}`} className='mb-5 cursor-pointer'>
-                                <img src={novel.img} alt="Novel Image" className='w-[129px] h-[192px] object-cover rounded-md'/>
-                                <div className=''>
+                            <a href={`/${slugify(novel.title)}`} className='mb-5 cursor-pointer rounded-md hover:shadow-md p-3'>
+                                <img src={novel.img} alt="Novel Image" className='w-[129px] h-[192px] object-cover rounded-md mx-auto'/>
+                                <div className='flex flex-col items-center mt-1'>
                                     <p className='font-semibold'>{novel.title}</p>
-                                    <p className='text-md'>{novel.author}</p>
+                                    <p className='text-md text-center'>{novel.author}</p>
                                 </div>
                             </a>
                         ))
