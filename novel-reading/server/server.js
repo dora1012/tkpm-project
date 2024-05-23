@@ -9,8 +9,8 @@ const hostname = process.env.HOST_NAME || 'localhost';
 const request = require('request-promise');
 const cheerio = require('cheerio');
 
-const startBrowser = require('./browser');
-const scraperController = require('./scraperController');
+const startBrowser = require('./services/browser');
+const scraperController = require('./services/scraperController');
 
 let browser= startBrowser();
   scraperController(browser);
