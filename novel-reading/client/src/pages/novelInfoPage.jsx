@@ -8,10 +8,12 @@ import TrendingNovelSideBar from '../components/trendingNovelSideBar';
 const novelInfoPage = () => {
     const { slug } = useParams(); // Get the slug from URL
     const novel = novelData.find(n => slugify(n.title) === slug); // Find the novel matching the slug
-  
+    const firstChapter = novel.chapterList[0];
     if (!novel) {
       return <div className='text-4xl text-red mx-auto my-auto'>Page not found</div>; // Handle case where novel is not found
     }
+    
+
     return (
         <div >
             <div className="bg-coral-pink">
@@ -27,7 +29,7 @@ const novelInfoPage = () => {
                         <div className=""><span className="font-semibold">Mô tả truyện:</span> {novel.description}</div>
                         <div className="book-actions mt-30">
                             <button className="btn-dark">
-                                <a href={`/${slugify(novel.title)}`}>Đọc truyện</a>
+                                <a href={`/${slugify(novel.title)}/chuong-${firstChapter.chapterNumber}`}>Đọc truyện</a>
                             </button>
                         </div>
                     </div>  
@@ -48,8 +50,7 @@ const novelInfoPage = () => {
                 <TrendingNovelSideBar/>           
             </div>
             
-        </div>
-        
+        </div>  
   )
 }
 
