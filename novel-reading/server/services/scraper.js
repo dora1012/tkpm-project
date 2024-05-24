@@ -1,14 +1,13 @@
+const puppeteer = require('puppeteer');
+
 const scraperNovelContent= require('./scraperNovelContent.js')
 
 
-const scraperHomePage =  (browser, url) => new Promise(async (resolve, reject) => {
+const scraperHomePage =  (url) => new Promise(async (resolve, reject) => {
     try{
-        let page= await browser.newPage()
-        console.log('New page created')
-        await page.goto(url)
-        console.log('Page navigated to ' + url)
-        await page.waitForSelector('#wrap')
-        console.log('Page loaded');
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        await page.goto(url, { waitUntil: 'networkidle2' });
     
         let truyenHot = await page.$$eval('#intro-index .index-intro .item', els => {
             return els.map(element => {
@@ -54,7 +53,7 @@ const scraperHomePage =  (browser, url) => new Promise(async (resolve, reject) =
         
 
         //console.log(truyenDaHoanThanh);
-        console.log(truyenHot);
+        console.log(truyenMoiCapNhat);
         
         
 
@@ -62,7 +61,7 @@ const scraperHomePage =  (browser, url) => new Promise(async (resolve, reject) =
         //     await scraperNovelInfor.scraperNovelInfor(el.link)
         // }
 
-        await page.close()
+        await browser.close();
         resolve()
         
     }
@@ -76,3 +75,9 @@ const scraperHomePage =  (browser, url) => new Promise(async (resolve, reject) =
 module.exports = {
     scraperHomePage
     };
+
+    (async () => {
+    const url = 'https://truyenfull.vn/';
+    const home = await scraperHomePage(url);
+    //console.log(detailTruyen);
+})();
