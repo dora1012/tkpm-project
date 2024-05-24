@@ -20,7 +20,7 @@ const trendingNovel = () => {
                                 <img src={novel.img} alt="Novel Image" className='w-[129px] h-[192px] object-cover rounded-md mx-auto'/>
                                 <div className='flex flex-col items-center mt-1'>
                                     <p className='font-semibold'>{novel.title}</p>
-                                    <p className='text-md text-center'>{novel.author}</p>
+                                    {/* <p className='text-md text-center'>{novel.author}</p> */}
                                 </div>
                             </a>
                         ))
