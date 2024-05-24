@@ -14,6 +14,9 @@ const scraperController = require('./services/scraperController');
 
 let browser= startBrowser();
   scraperController(browser);
+
+
+  
 app.get('/', async (req, res) => {
   let browser= startBrowser();
   scraperController(browser);

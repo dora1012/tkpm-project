@@ -1,11 +1,13 @@
 const scraper= require('./scraper')
+const scraperNovelContent= require('./scraperNovelContent')
+const scraperNovelInfor= require('./scraperNovelInfor')
 
 const scraperController = async (browserInstance) => {
-    const url = 'https://truyenfull.vn/'
+    const url = 'https://truyenfull.vn/tu-cam-270192/'
     try{
         let browser = await browserInstance;
-        await scraper.scraperTrangChu(browser, url)
-       // await scraper.truyenMoiCapNhat(browser, url)
+        //await scraper.scraperHomePage(browser, url)
+        await scraperNovelInfor.scraperNovelInfor(browser, url)
     }
     catch(err){
         console.log("Could not resolve at scraperController => ", err);
