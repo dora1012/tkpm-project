@@ -1,6 +1,9 @@
 const puppeteer = require('puppeteer');
+const { slugify } = require('../utils/slugify');
 
-async function novelInfor(url) {
+
+async function novelInfor(source, title) {
+    const url = `${source}/${slugify(title)}`;
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
@@ -44,9 +47,10 @@ module.exports = {
 
 // Example controller usage
 (async () => {
-    const url = 'https://truyenfull.vn/tu-cam-270192/';
+    const source = 'https://truyenfull.vn';
+    const title = 'Tự cẩm';
     try {
-        const infor = await novelInfor(url);
+        const infor = await novelInfor(source, title);
         console.log(infor);
         // You can now use infor in your controller
     } catch (error) {
