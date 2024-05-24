@@ -19,7 +19,10 @@ export default {
           'flamingo': '#FC8EAC',
           'crimson': '#E32636',
           'salmon': '#FF8C69',
-          'coral-pink1': '#f87979'
+          'coral-pink1': '#f87979',
+          'bright-blue': '#0096FF',
+          'pastel-pink': '#F8C8DC',
+          'jade': '	#00A36C'
       },
 
       fontSize: {

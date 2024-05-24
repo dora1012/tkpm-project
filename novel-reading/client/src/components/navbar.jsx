@@ -1,7 +1,10 @@
 import { Link, Outlet } from "react-router-dom"
 import logo from "../imgs/logo.svg"
-import {AiOutlineCaretUp, AiOutlineCaretDown} from "react-icons/ai"
 import { useState, useRef } from "react"
+import { novelCategories } from "../utils/fetchFromAPI"
+import { novelList } from "../utils/fetchFromAPI"
+import { slugify } from "../utils/slugify"
+import { useEffect } from "react"
 //import Breadcrumbs from "./breadcrumb"
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
@@ -28,9 +31,32 @@ const Navbar = () => {
     });
     const arrowDown = <i class= "fi fi-sr-angle-small-down mt-1"></i>;
     const listIcon = <i class="fi fi-rr-rectangle-list pr-2"></i>;
+    const [visible, setVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+  
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        if (window.scrollY > lastScrollY) { 
+          setVisible(false);
+        } else { 
+          setVisible(true);
+        }
+        setLastScrollY(window.scrollY); 
+      }
+    };
+  
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        window.addEventListener('scroll', controlNavbar);
+  
+        return () => {
+          window.removeEventListener('scroll', controlNavbar);
+        };
+      }
+    }, [lastScrollY]);
     return (
         <>
-        <nav className="navbar">
+        <nav className={`navbar ${visible ? 'transform translate-y-0' : 'transform -translate-y-full'}`}>
 
             <Link to="/" className="nav-logo flex-none w-20">
                 <img src={logo} alt="Masknet Logo" className="w-full" />
@@ -64,34 +90,16 @@ const Navbar = () => {
                     {
                        listOpen && <div ref={listRef} className="absolute border border-smoke rounded-lg bg-white">
                         {
-                                <div className="w-full flex flex-col align-middle gap-5 p-3">
-                                <p className="hover:text-crimson">
-                                    <Link to="/truyen-moi-cap-nhat">Truyện mới cập nhật</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/truyen-hot">Truyện Hot</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/truyen-full">Truyện Full</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/tien-hiep-hay">Tiên hiệp hay</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/kiem-hiep-hay">Kiếm hiệp hay</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/truyen-teen-hay">Truyện teen hay</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/ngon-tinh-hay">Ngôn tình hay</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/ngon-tinh-hai">Ngôn tình hài</Link>
-                                </p>
+                        (
+                            <div className="w-full columns-2 gap-10 p-3">
+                                {novelList.map((items, index) => (
+                                    <p className="hover:text-crimson mb-5" key={index}>
+                                        <a href={`/danh-sach/${slugify(items)}`}>{items}</a>
+                                    </p>
+                                ))}
                             </div>
-                        }
-                           
+                        )
+                        }                         
                        </div>
                     }
                 </li>
@@ -101,39 +109,17 @@ const Navbar = () => {
                         Thể loại
                         {arrowDown}
                     </div>
-                    {
-                       typeOpen && <div ref={typeRef} className="absolute border border-smoke rounded-lg bg-white">
-                        {
-                                <div className="w-full flex flex-col align-middle gap-5 p-3">
-                                <p className="hover:text-crimson">
-                                    <Link to="/tien-hiep">Tiên hiệp</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/kiem-hiep">Kiếm hiệp</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/ngon-tinh">Ngôn tình</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/viet-nam">Việt Nam</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/light-novel">Light Novel</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/truyen-teen">Truyện teen</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/hai-huoc">Hài hước</Link>
-                                </p>
-                                <p className="hover:text-crimson">
-                                    <Link to="/khac">Khác</Link>
-                                </p>
+                    {typeOpen && (
+                            <div ref={typeRef} className="absolute border border-smoke rounded-lg bg-white">
+                                <div className="w-full columns-3 gap-10 p-3">
+                                    {novelCategories.map((category, index) => (
+                                        <p className="hover:text-crimson mb-5" key={index}>
+                                            <a href={`/the-loai/${slugify(category)}`}>{category}</a>
+                                        </p>
+                                    ))}
+                                </div>
                             </div>
-                        }
-                           
-                       </div>
-                    }
+                    )}   
                 </li><li>
                     <div ref={feature3Ref} className="text-white font-semibold relative py-5 px-3 rounded-md flex items-center gap-1 cursor-pointer hover:bg-coral-pink1 delay-0" onClick={()=> setClassifyOpen(!classifyOpen)}>
                         {listIcon}
@@ -145,26 +131,22 @@ const Navbar = () => {
                         {
                                 <div className="w-full flex flex-col align-middle gap-5 p-3">
                                 <p className="hover:text-crimson">
-                                    <Link to="/duoi-100-chuong">Dưới 100 chương</Link>
+                                    <Link to="/phan-loai/duoi-100-chuong">Dưới 100 chương</Link>
                                 </p>
                                 <p className="hover:text-crimson">
-                                    <Link to="/100-500-chuong">100-500 chương</Link>
+                                    <Link to="/phan-loai/100-500-chuong">100-500 chương</Link>
                                 </p>
                                 <p className="hover:text-crimson">
-                                    <Link to="/500-1000-chuong">500-1000 chương</Link>
+                                    <Link to="/phan-loai/500-1000-chuong">500-1000 chương</Link>
                                 </p>
                                 <p className="hover:text-crimson">
-                                    <Link to="/tren-1000-chuong">Trên 1000 chương</Link>
+                                    <Link to="/phan-loai/tren-1000-chuong">Trên 1000 chương</Link>
                                 </p>
                             </div>
                         }
                            
                        </div>
                     }
-                </li><li>
-                    <Link to="/" className="text-white font-semibold relative py-5 px-3 rounded-md flex items-center gap-1 cursor-pointer hover:bg-coral-pink1 delay-0">
-                        Cài đặt
-                    </Link>
                 </li>
             </ul>
         </nav>

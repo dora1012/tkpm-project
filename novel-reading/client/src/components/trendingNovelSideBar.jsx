@@ -17,7 +17,7 @@ const trendingNovelSideBar = () => {
                     </li>
                 ))}
             </ul>
-        </div>
+    </div>
   )
 }
 
