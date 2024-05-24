@@ -2,7 +2,7 @@ export function slugify(text){
       // Vietnamese character map
       const from = "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ";
       const to   = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd";
-
+      text = text.trim();
       // Replace Vietnamese characters with ASCII characters
       let updatedText = text.toLowerCase().split('').map((char, index) => {
       let i = from.indexOf(char);

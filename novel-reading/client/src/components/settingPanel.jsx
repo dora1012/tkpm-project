@@ -1,18 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const settingPanel = () => {
+const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize }) => {
     const ref = useRef();
     const featureRef = useRef();
     const [fontSize, setFontSize] = useState(20);
-    const [background, setBackground] = useState('pink');
+    const [background, setBackground] = useState('white');
     const [isOpen, setIsOpen] = useState(false);
 
-    const handleFontSizeChange = (change) => {
-        setFontSize(prev => Math.max(10, prev + change));
+    const handleFontSizeChange = (e) => {
+        onChangeFontSize(e.target.value, 10);
     };
 
-    const handleBackgroundColorChange = (color) => {
-        setBackground(color);
+    const handleFontStyleChange = (e) => {
+        onChangeFontStyle(e.target.value);
+      };
+
+    const handleBackgroundChange = (e) => {
+        onChangeBackground(e.target.value);
     };
 
     useEffect(() => {
@@ -31,7 +35,7 @@ const settingPanel = () => {
 
     
     return (
-        <div className="fixed top-1/2 right-20 transform -translate-y-1/2 z-50">
+        <div className="fixed top-1/3 right-20 transform -translate-y-1/2 z-50">
             <button
                 ref={featureRef}
                 onClick={() => setIsOpen(!isOpen)}
@@ -42,44 +46,41 @@ const settingPanel = () => {
 
             {isOpen && (
                 <div ref={ref} className="absolute right-0 top-14 w-64 bg-white text-coral-pink p-4 rounded-lg shadow-lg">
-                    <p className="text-2xl font-semibold mb-4">DISPLAY OPTIONS</p>
+                    <p className="text-2xl font-semibold mb-4">Cài đặt hiển thị</p>
                     <div className="mb-4">
-                        <p className="text-xl font-semibold mb-2 text-coral-pink">Background</p>
-                        <div className="flex space-x-2">
-                            <button
-                                className={`h-10 w-10 rounded-full ${background === 'white' ? 'ring-2 ring-grey' : ''}`}
-                                style={{ backgroundColor: 'white' }}
-                                onClick={() => handleBackgroundColorChange('white')}
-                            ></button>
-                            <button
-                                className={`h-10 w-10 rounded-full ${background === 'beige' ? 'ring-2 ring-grey' : ''}`}
-                                style={{ backgroundColor: 'beige' }}
-                                onClick={() => handleBackgroundColorChange('beige')}
-                            ></button>
-                            <button
-                                className={`h-10 w-10 rounded-full ${background === 'black' ? 'ring-2 ring-black' : ''}`}
-                                style={{ backgroundColor: 'black' }}
-                                onClick={() => handleBackgroundColorChange('black')}
-                            ></button>
-                        </div>
+                        <label className="block mb-2">Màu nền</label>
+                        <select
+                        className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
+                        onChange={handleBackgroundChange}
+                        >
+                        <option value="white">Trắng</option>
+                        <option value="beige">Beige</option>
+                        <option value="black">Black</option>
+                        </select>
                     </div>
-                    <div>
-                        <p className="text-xl font-semibold mb-2 text-coral-pink">Font Size</p>
-                        <div className="flex items-center space-x-2 text-smoke">
-                            <button
-                                className="bg-gray py-1 px-2 rounded"
-                                onClick={() => handleFontSizeChange(-1)}
-                            >
-                                A-
-                            </button>
-                            <span className="text-l">{fontSize}</span>
-                            <button
-                                className="bg-gray py-1 px-2 rounded"
-                                onClick={() => handleFontSizeChange(1)}
-                            >
-                                A+
-                            </button>
-                        </div>
+                    <div className="mb-4">
+                        <label className="block mb-2">Font chữ</label>
+                        <select
+                        className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
+                        onChange={handleFontStyleChange}
+                        >
+                        <option value="inter">Gelasio</option>
+                        <option value="gelasio">Inter</option>
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-2">Size chữ</label>
+                        <select
+                        className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
+                        onChange={handleFontSizeChange}
+                        >
+                        <option value="sm">12</option>
+                        <option value="base">14</option>
+                        <option value="xl">16</option>
+                        <option value="2xl">20</option>
+                        <option value="3xl">28</option>
+                        <option value="4xl">38</option>
+                        </select>
                     </div>
                 </div>
             )}
