@@ -1,4 +1,7 @@
-const scraperTrangChu =  (browser, url) => new Promise(async (resolve, reject) => {
+const scraperNovelContent= require('./scraperNovelContent.js')
+
+
+const scraperHomePage =  (browser, url) => new Promise(async (resolve, reject) => {
     try{
         let page= await browser.newPage()
         console.log('New page created')
@@ -51,44 +54,13 @@ const scraperTrangChu =  (browser, url) => new Promise(async (resolve, reject) =
         
 
         //console.log(truyenDaHoanThanh);
-       // console.log(truyenHot);
+        console.log(truyenHot);
         
-        const scraperDetail= async(link)=>new Promise(async (resolve, reject)=>{
-            try{
-                let pageDetail= await browser.newPage()
-                await pageDetail.goto(link)
-                console.log('Page navigated to ' + link);
-                await pageDetail.waitForSelector('#wrap')
-                
-                
-                // const detailData = await page.$eval('.col-xs-12.col-info-desc', detail => {
-                //     const title = detail.querySelector('.title').textContent.trim();
-                //     const img = detail.querySelector('.info-holder .book img').getAttribute('src');
-                //     const author = detail.querySelector('.info-holder div:nth-child(1) a').textContent.trim();
-                //     const genres = Array.from(detail.querySelectorAll('.info-holder div:nth-child(2) a')).map(genre => genre.textContent.trim());
-                //     const source = detail.querySelector('.info-holder div:nth-child(3) .source').textContent.trim();
-                //     const status = detail.querySelector('.info-holder div:nth-child(4) .text-success').textContent.trim();
-                //     const rating = detail.querySelector('.rate-holder').getAttribute('data-score');
-                //     const ratingValue = detail.querySelector('[itemprop="aggregateRating"] [itemprop="ratingValue"]').textContent.trim();
-                //     const ratingCount = detail.querySelector('[itemprop="aggregateRating"] [itemprop="ratingCount"]').textContent.trim();
-                //     const description = detail.querySelector('.desc-text').textContent.trim();
-                    
-                //     return { title, img, author, genres, source, status, rating, ratingValue, ratingCount, description };
-                // });
+        
 
-                
-                await pageDetail.close()
-                console.log('Page closed '+ link);
-                resolve()
-            } catch(err){
-                console.log("Could not resolve at scraperDetail => ", err);
-                reject(err);
-            }
-        })
-
-        for(let el of truyenHot){
-            await scraperDetail(el.link)
-        }
+        // for(let el of truyenHot){
+        //     await scraperNovelInfor.scraperNovelInfor(el.link)
+        // }
 
         await page.close()
         resolve()
@@ -102,5 +74,5 @@ const scraperTrangChu =  (browser, url) => new Promise(async (resolve, reject) =
 
 
 module.exports = {
-    scraperTrangChu
+    scraperHomePage
     };
