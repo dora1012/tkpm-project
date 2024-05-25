@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 
-// Function to fetch and extract 'Truyen Hot' novels from a given URL
+
 const crawlTruyenHot = async (url) => {
   try {
     const response = await axios.get(url, {
@@ -28,7 +28,7 @@ const crawlTruyenHot = async (url) => {
   }
 };
 
-// Function to fetch and extract 'Truyen Moi Cap Nhat' novels from a given URL
+
 const crawlTruyenMoiCapNhat = async (url) => {
     try {
       const response = await axios.get(url, {
@@ -49,7 +49,7 @@ const crawlTruyenMoiCapNhat = async (url) => {
         truyenMoiCapNhat.push({ title, categories, chapter, updateTime });
       });
   
-      return truyenMoiCapNhat;  // Return the array of novels
+      return truyenMoiCapNhat;  
     } catch (error) {
       console.error(`There was an error fetching the URL: ${error}`);
       throw new Error('Failed to fetch novels');
@@ -82,8 +82,8 @@ const crawlTruyenMoiCapNhat = async (url) => {
     }
   };
   
-// Function to fetch and extract the main list titles from the first dropdown menu
-const crawlMainList = async (url) => {
+
+  const crawlMainList = async (url) => {
     try {
       const response = await axios.get(url, {
         headers: {
@@ -100,15 +100,15 @@ const crawlMainList = async (url) => {
         mainList.push(title);
       });
   
-      return mainList;  // Return the array of titles
+      return mainList;  
     } catch (error) {
       console.error(`There was an error fetching the URL: ${error}`);
       throw new Error('Failed to fetch main list titles');
     }
   };
   
-// Function to fetch and extract the category list titles from the second dropdown menu
-const crawlCategoryList = async (url) => {
+
+  const crawlCategoryList = async (url) => {
     try {
       const response = await axios.get(url, {
         headers: {
@@ -125,15 +125,15 @@ const crawlCategoryList = async (url) => {
         categoryList.push(title);
       });
   
-      return categoryList;  // Return the array of titles
+      return categoryList;  
     } catch (error) {
       console.error(`There was an error fetching the URL: ${error}`);
       throw new Error('Failed to fetch category list titles');
     }
   };
   
-// Function to fetch and extract the chapter classification list titles from the third dropdown menu
-const crawlChapterClassificationList = async (url) => {
+
+  const crawlChapterClassificationList = async (url) => {
     try {
       const response = await axios.get(url, {
         headers: {
@@ -168,13 +168,12 @@ module.exports = {
 };
 
 
-// Example controller usage
+// TEST
 (async () => {
     const source = 'https://truyenfull.vn';
     try {
         const infor = await crawlChapterClassificationList(source);
         console.log(infor);
-        // You can now use infor in your controller
     } catch (error) {
         console.error('Error fetching novel content:', error);
     }

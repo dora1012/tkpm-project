@@ -35,13 +35,12 @@ module.exports = {
   crawlNovelList,
 };
 
-// Example controller usage
+// TEST
 (async () => {
   const source = 'https://truyenfull.vn/danh-sach/kiem-hiep-hay/';
   try {
     const novelList = await crawlNovelList(source);
     console.log(novelList);
-    // You can now use novelList in your controller
   } catch (error) {
     console.error('Error fetching novel list:', error);
   }

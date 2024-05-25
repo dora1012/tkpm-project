@@ -1,7 +1,7 @@
 // controllers/searchController.js
 
-const { crawlSearchResults } = require('../services/crawlSearchPage'); // Adjust the path as needed
-const { sources } = require('../config/sources'); // Import the search URL from sources.js
+const { crawlSearchResults } = require('../services/crawlSearchPage'); 
+const { sources } = require('../config/sources'); 
 const searchUrl= sources.truyenfull.url
 
 searchUrl=`${searchUrl}/tim-kiem`;

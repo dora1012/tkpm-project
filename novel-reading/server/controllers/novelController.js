@@ -1,25 +1,29 @@
 const { crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh } = require('../services/novelCrawl');
-const { defaultSource } = require('../config/sources');
+const { sources } = require('../config/sources');
+const searchUrl= sources.truyenfull.url
 
-// Controller function to handle the request and response asynchronously for Truyen Moi Cap Nhat
-const getTruyenMoiCapNhat = async (req, res, next) => {
+searchUrl=`${searchUrl}/tim-kiem`;
+
+const getTruyenMoiCapNhat = async (req, res) => {
   const url = defaultSource;  // Get URL from configuration file
   try {
     const novels = await crawlTruyenMoiCapNhat(url);
-    res.json(novels);  // Send the array of novels as JSON
+    res.json(novels);  
   } catch (error) {
-    next(error);  // Pass the error to the next middleware (error handler)
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-// Controller function to handle the request and response asynchronously for Truyen Da Hoan Thanh
-const getTruyenDaHoanThanh = async (req, res, next) => {
-  const url = defaultSource;  // Get URL from configuration file
+
+const getTruyenDaHoanThanh = async (req, res) => {
+  const url = defaultSource; 
   try {
     const novels = await crawlTruyenDaHoanThanh(url);
-    res.json(novels);  // Send the array of novels as JSON
+    res.json(novels);  
   } catch (error) {
-    next(error);  // Pass the error to the next middleware (error handler)
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -27,10 +31,3 @@ module.exports = {
   getTruyenMoiCapNhat,
   getTruyenDaHoanThanh,
 };
-
-
-
-
-
-
-

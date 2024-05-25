@@ -6,7 +6,7 @@ const crawlSearchResults = async (searchUrl, queryParams) => {
     // Construct the search URL with query parameters
     const encodedKeyword = encodeURIComponent(queryParams.keyword).replace(/%20/g, '+');
     const url = `${searchUrl}?tukhoa=${encodedKeyword}`;
-    console.log(`Fetching URL: ${url}`);  // Debugging line to check the constructed URL
+    console.log(`Fetching URL: ${url}`);  
 
     // Fetch the search page
     const response = await axios.get(url, {
@@ -45,17 +45,16 @@ module.exports = {
   crawlSearchResults,
 };
 
-// Example usage
+// TEST
 (async () => {
   const searchUrl = 'https://truyenfull.vn/tim-kiem';
   const queryParams = {
-    keyword: ' lâm  '  // Replace with your search keyword
+    keyword: ' lâm  '  
   };
 
   try {
     const searchResults = await crawlSearchResults(searchUrl, queryParams);
     console.log(searchResults);
-    // You can now use searchResults in your controller
   } catch (error) {
     console.error('Error fetching search results:', error);
   }
