@@ -44,6 +44,13 @@ const crawlNovelInfo = async (novelUrl) => {
       count: $('span[itemprop="ratingCount"]').text().trim(),
     };
 
+    // Extracting chapter list
+    novelInfor.chapterList = [];
+  
+    $('#list-chapter ul.list-chapter li a').each((index, element) => {
+        novelInfor.chapterList.push($(element).text().trim());
+    });
+
     return novelInfor;
   } catch (error) {
     console.error(`Error fetching novel info: ${error}`);
@@ -51,43 +58,43 @@ const crawlNovelInfo = async (novelUrl) => {
   }
 };
 
-const crawlChapterList = async (novelUrl) => {
-    try {
-      const response = await axios.get(novelUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-      });
+// const crawlChapterList = async (novelUrl) => {
+//     try {
+//       const response = await axios.get(novelUrl, {
+//         headers: {
+//           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+//         }
+//       });
   
-      const $ = cheerio.load(response.data);
-      const chapterList = [];
+//       const $ = cheerio.load(response.data);
+//       const chapterList = [];
   
-      $('#list-chapter ul.list-chapter li a').each((index, element) => {
-        chapterList.push($(element).text().trim());
-      });
+//       $('#list-chapter ul.list-chapter li a').each((index, element) => {
+//         chapterList.push($(element).text().trim());
+//       });
   
-      return chapterList;
-    } catch (error) {
-      console.error(`Error fetching chapter list: ${error}`);
-      throw new Error('Failed to fetch chapter list');
-    }
-  };
+//       return chapterList;
+//     } catch (error) {
+//       console.error(`Error fetching chapter list: ${error}`);
+//       throw new Error('Failed to fetch chapter list');
+//     }
+//   };
   
   
   
 module.exports = {
   crawlNovelInfo,
-  crawlChapterList
+  //crawlChapterList
 };
 
 
 // TEST
-(async () => {
-    const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/';
-    try {
-        const infor = await crawlChapterList(source);
-        console.log(infor);
-    } catch (error) {
-        console.error('Error fetching novel content:', error);
-    }
-})();
+// (async () => {
+//     const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/';
+//     try {
+//         const infor = await crawlNovelInfo(source);
+//         console.log(infor);
+//     } catch (error) {
+//         console.error('Error fetching novel content:', error);
+//     }
+// })();

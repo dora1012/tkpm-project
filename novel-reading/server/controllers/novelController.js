@@ -1,33 +1,62 @@
-const { crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh } = require('../services/novelCrawl');
-const { sources } = require('../config/sources');
-const searchUrl= sources.truyenfull.url
+const {   crawlTruyenHot, crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh, } = require('../services/crawlHomePage');
+const {crawlNovelInfo}= require('../services/crawlNovelInforPage')
+const { defaultSource } = require('../config/sources');
 
-searchUrl=`${searchUrl}/tim-kiem`;
 
+// const searchUrl=`${searchUrl}/tim-kiem`;
+
+// used for Home Page 
+const getTruyenHot = async (req, res) => {
+  try {
+    const truyenHot = await crawlTruyenHot(defaultSource);
+    res.json(truyenHot);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error - TRUYEN HOT CONTROLLER' });
+  }
+};
+
+// used for Home Page 
 const getTruyenMoiCapNhat = async (req, res) => {
-  const url = defaultSource;  // Get URL from configuration file
   try {
-    const novels = await crawlTruyenMoiCapNhat(url);
-    res.json(novels);  
+    const truyenMoiCapNhat = await crawlTruyenMoiCapNhat(defaultSource);
+    res.json(truyenMoiCapNhat);  
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error - TRUYEN MOI CAP NHAT CONTROLLER' });
   }
 };
 
-
+// used for Home Page 
 const getTruyenDaHoanThanh = async (req, res) => {
-  const url = defaultSource; 
   try {
-    const novels = await crawlTruyenDaHoanThanh(url);
-    res.json(novels);  
+    const truyenDaHoanThanh = await crawlTruyenDaHoanThanh(defaultSource);
+    res.json(truyenDaHoanThanh);  
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error - TRUYEN DA HOAN THANH CONTROLLER' });
   }
 };
+
+
+// used for Novel Infor Page
+const getNovelInfor= async (req, res) => {
+  try {
+    const{novelSlug} =req.params;
+    const url= `${defaultSource}/${novelSlug}/`
+    const novelInfor = await crawlNovelInfo(url);
+    res.json(novelInfor);  
+  } catch (error) {  
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error - NOVEL INFOR CONTROLLER' });
+  }
+};
+
+
 
 module.exports = {
+  getTruyenHot,
   getTruyenMoiCapNhat,
   getTruyenDaHoanThanh,
+  getNovelInfor
 };

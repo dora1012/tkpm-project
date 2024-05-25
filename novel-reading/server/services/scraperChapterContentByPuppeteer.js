@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const { slugify } = require('../utils/slugify');
 
-async function novelContent(source, title, chapter) {
+async function CrawChapterContentPPT(source, title, chapter) {
     const url = `${source}/${slugify(title)}/chuong-${chapter}/`;
 
     const browser = await puppeteer.launch({ headless: true });
@@ -37,7 +37,7 @@ async function novelContent(source, title, chapter) {
     return detailTruyen;
 }
 
-module.exports = novelContent;
+module.exports = CrawChapterContentPPT;
 
 // Ví dụ sử dụng
 (async () => {
@@ -46,7 +46,7 @@ module.exports = novelContent;
     const chapter = 2;
     try {
         console.log(`${source}/${slugify(title)}/chuong-${chapter}/`);
-        const detailTruyen = await novelContent(source, title, chapter); // Correctly calling and awaiting the function
+        const detailTruyen = await CrawChapterContentPPT(source, title, chapter); // Correctly calling and awaiting the function
         console.log(detailTruyen); // Logging the result after it is defined
     } catch (error) {
         console.error('Error fetching novel content:', error);

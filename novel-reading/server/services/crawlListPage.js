@@ -17,7 +17,6 @@ const crawlNovelList = async (url) => {
 
       novel.image = $(element).find('div[data-image]').attr('data-image') || '';
       novel.title = $(element).find('h3.truyen-title a').text().trim();
-      novel.url = $(element).find('h3.truyen-title a').attr('href');
       novel.authors = $(element).find('.author').text().trim().split(',').map(author => author.trim());
       novel.chapter = $(element).find('.text-info a').text().trim();
 
@@ -36,14 +35,14 @@ module.exports = {
 };
 
 // TEST
-(async () => {
-  const source = 'https://truyenfull.vn/danh-sach/kiem-hiep-hay/';
-  try {
-    const novelList = await crawlNovelList(source);
-    console.log(novelList);
-  } catch (error) {
-    console.error('Error fetching novel list:', error);
-  }
-})();
+// (async () => {
+//   const source = 'https://truyenfull.vn/danh-sach/tien-hiep-hay/';
+//   try {
+//     const novelList = await crawlNovelList(source);
+//     console.log(novelList);
+//   } catch (error) {
+//     console.error('Error fetching novel list:', error);
+//   }
+// })();
 
 

@@ -169,12 +169,12 @@ module.exports = {
 
 
 // TEST
-(async () => {
-    const source = 'https://truyenfull.vn';
-    try {
-        const infor = await crawlChapterClassificationList(source);
-        console.log(infor);
-    } catch (error) {
-        console.error('Error fetching novel content:', error);
-    }
-})();
+// (async () => {
+//     const source = 'https://truyenfull.vn';
+//     try {
+//         const infor = await crawlChapterClassificationList(source);
+//         console.log(infor);
+//     } catch (error) {
+//         console.error('Error fetching novel content:', error);
+//     }
+// })();

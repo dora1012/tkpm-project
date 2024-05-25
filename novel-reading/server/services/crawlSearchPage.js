@@ -46,18 +46,18 @@ module.exports = {
 };
 
 // TEST
-(async () => {
-  const searchUrl = 'https://truyenfull.vn/tim-kiem';
-  const queryParams = {
-    keyword: ' lâm  '  
-  };
+// (async () => {
+//   const searchUrl = 'https://truyenfull.vn/tim-kiem';
+//   const queryParams = {
+//     keyword: ' lâm  '  
+//   };
 
-  try {
-    const searchResults = await crawlSearchResults(searchUrl, queryParams);
-    console.log(searchResults);
-  } catch (error) {
-    console.error('Error fetching search results:', error);
-  }
-})();
+//   try {
+//     const searchResults = await crawlSearchResults(searchUrl, queryParams);
+//     console.log(searchResults);
+//   } catch (error) {
+//     console.error('Error fetching search results:', error);
+//   }
+// })();
 
 

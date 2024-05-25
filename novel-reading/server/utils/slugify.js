@@ -16,6 +16,7 @@ function slugify(text){
       return updatedText;
   }
   
+  
   module.exports = {
       slugify
   };

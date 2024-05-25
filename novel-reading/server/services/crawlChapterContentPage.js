@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const crawlNovelContent = async (chapterurl) => {
+const crawlChapterContent = async (chapterurl) => {
   try {
     const response = await axios.get(chapterurl, {
       headers: {
@@ -10,27 +10,27 @@ const crawlNovelContent = async (chapterurl) => {
     });
 
     const $ = cheerio.load(response.data);
-    const novelContent = {};
+    const chapterContent = {};
 
     // Extracting novel title
-    novelContent.novelTitle = $('a.truyen-title').text().trim();
+    chapterContent.novelTitle = $('a.truyen-title').text().trim();
 
     // Extracting chapter title
-    novelContent.chapterTitle = $('a.chapter-title').text().trim();
+    chapterContent.chapterTitle = $('a.chapter-title').text().trim();
 
     // Extracting chapter content
-    novelContent.chapterContent = $('#chapter-c').html().trim();
+    chapterContent.chapterContent = $('#chapter-c').html().trim();
 
     // Extracting chapter list from dropdown button
-    novelContent.chapterList = [];
+    chapterContent.chapterList = [];
     $('.chapter_jump option').each((index, element) => {
       const chapterNumber = $(element).text().match(/\d+/);
       if (chapterNumber) {
-        novelContent.chapterList.push(chapterNumber[0]);
+        chapterContent.chapterList.push(chapterNumber[0]);
       }
     });
 
-    return novelContent;
+    return chapterContent;
   } catch (error) {
     console.error(`Error fetching novel content: ${error}`);
     throw new Error('Failed to fetch novel content');
@@ -38,18 +38,18 @@ const crawlNovelContent = async (chapterurl) => {
 };
 
 module.exports = {
-  crawlNovelContent,
+  crawlChapterContent,
 };
 
 // TEST
-(async () => {
-  const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/chuong-2';
-  try {
-    const infor = await crawlNovelContent(source);
-    console.log(infor);
-  } catch (error) {
-    console.error('Error fetching novel content:', error);
-  }
-})();
+// (async () => {
+//   const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/chuong-2';
+//   try {
+//     const infor = await crawlChapterContent(source);
+//     console.log(infor);
+//   } catch (error) {
+//     console.error('Error fetching novel content:', error);
+//   }
+// })();
 
 
