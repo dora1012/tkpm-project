@@ -80,13 +80,13 @@ module.exports = {
   crawlChapterList
 };
 
-// Example controller usage
+
+// TEST
 (async () => {
     const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/';
     try {
         const infor = await crawlChapterList(source);
         console.log(infor);
-        // You can now use infor in your controller
     } catch (error) {
         console.error('Error fetching novel content:', error);
     }
