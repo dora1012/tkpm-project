@@ -3,7 +3,7 @@ const {crawlNovelList } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
 
 
-// used for Home Page
+// used for Navigation Bar 
 const getMainList = async (req, res) => {
   try {
     const mainList = await crawlMainList(defaultSource);
@@ -14,12 +14,14 @@ const getMainList = async (req, res) => {
   }
 };
 
+
+
 // used for Novel List of Each Type in MainList
-const getNovelMainList= async (req, res) => {
+const getNovelListOfMainList= async (req, res) => {
   try {
-    const{slug, listSlug } =req.params;
-    const url= `${defaultSource}/${slug}/${listSlug}/`
-    const novels = await crawlNovelList(url);
+    const{listSlug } =req.params;
+    const listUrl= `${defaultSource}/danh-sach/${listSlug}/`;
+    const novels = await crawlNovelList(listUrl);
     res.json(novels);  
   } catch (error) {  
     console.error(error);
@@ -32,5 +34,5 @@ const getNovelMainList= async (req, res) => {
 
 module.exports = {
     getMainList,
-    getNovelMainList
+    getNovelListOfMainList
 };

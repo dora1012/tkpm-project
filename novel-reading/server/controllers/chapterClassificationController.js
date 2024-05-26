@@ -2,6 +2,7 @@ const {  crawlChapterClassificationList } = require('../services/novelCrawl');
 const { defaultSource } = require('../config/sources');
 
 
+// used for Navigation Bar 
 const  getChapterClassificationList= async (req, res) => {
   try {
     const chapterClassificationList = await crawlChapterClassificationList(defaultSource);

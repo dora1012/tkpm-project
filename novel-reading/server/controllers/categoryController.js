@@ -4,24 +4,25 @@ const {crawlNovelList } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
 
 
-
+// used for Navigation Bar 
 const getCategoryList = async (req, res) => {
   try {
     const categoryList = await crawlCategoryList(defaultSource);
     res.json(categoryList);  
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error - CATEGORY LIST' });
+    res.status(500).json({ error: 'Internal Server Error - CATEGORY LIST CONTROLLER' });
   }
 };
 
-getNovelMainList
+
 // used for Novel List of Each Type in CategoryList
-const getNovelCategoryList= async (req, res) => {
+const getNovelListOfCategory= async (req, res) => {
   try {
-    const{slug, categorySlug } =req.params;
-    const url= `${defaultSource}/${slug}/${categorySlug}/`
-    const novels = await crawlNovelList(url);
+    const{categorySlug } =req.params;
+    const categoryUrl= `${defaultSource}/the-loai/${categorySlug}/`;
+
+    const novels = await crawlNovelList(categoryUrl);
     res.json(novels);  
   } catch (error) {  
     console.error(error);
@@ -31,5 +32,5 @@ const getNovelCategoryList= async (req, res) => {
 
 module.exports = {
     getCategoryList,
-    getNovelCategoryList
+    getNovelListOfCategory
 };

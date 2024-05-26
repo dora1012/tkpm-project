@@ -1,20 +1,21 @@
-// controllers/searchController.js
 
 const { crawlSearchResults } = require('../services/crawlSearchPage'); 
-const { sources } = require('../config/sources'); 
-const searchUrl= sources.truyenfull.url
+const {crawlNovelList } = require('../services/crawlListPage');
+const { defaultSource } = require('../config/sources');
 
-searchUrl=`${searchUrl}/tim-kiem`;
+const searchUrl= `${defaultSource}/tim-kiem/`;
 
 
-const searchController = async (req, res) => {
-  const keyword = req.query.keyword;
+
+const getNovelListOfSearchResult = async (req, res) => {
+  const keyword = req.query;
   if (!keyword) {
     return res.status(400).json({ error: 'Keyword is required' });
   }
 
   try {
-    const searchResults = await crawlSearchResults(searchUrl, { keyword });
+    searchUrl=`${searchUrl}?tukhoa=${keyword}`
+    const searchResults = await crawlNovelList(searchUrl);
     res.json(searchResults);
   } catch (error) {
     console.error('Error fetching search results:', error);
@@ -22,8 +23,9 @@ const searchController = async (req, res) => {
   }
 };
 
+
 module.exports = {
-  searchController,
+  getNovelListOfSearchResult
 };
 
 
