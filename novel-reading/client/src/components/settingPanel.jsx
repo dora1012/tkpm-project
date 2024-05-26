@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize, currentBackground, currentFontStyle, currentFontSize }) => {
+const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize, onChangeLineSpacing, currentLineSpacing, currentBackground, currentFontStyle, currentFontSize }) => {
     const ref = useRef();
     const featureRef = useRef();
     const [fontSize, setFontSize] = useState(20);
@@ -84,6 +84,15 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize,
                         <option value="3xl">28</option>
                         <option value="4xl">38</option>
                         </select>
+                    </div>
+                    <div>
+                        <label >Độ giãn dòng:</label>
+                        <input className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
+                        type="number"
+                        value={currentLineSpacing}
+                        onChange={(e) => onChangeLineSpacing(parseFloat(e.target.value))}
+                        step="0.5"
+                        />
                     </div>
                 </div>
             )}
