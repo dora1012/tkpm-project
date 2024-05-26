@@ -1,5 +1,5 @@
 const express = require('express');
-const {getMainList} = require('../controllers/mainListController');
+const {getMainList, getNovelListOfMainList} = require('../controllers/mainListController');
 const router = express.Router();
 
 router.get('/danh-sach', getMainList);

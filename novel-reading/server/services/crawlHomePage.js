@@ -172,7 +172,7 @@ module.exports = {
 // (async () => {
 //     const source = 'https://truyenfull.vn';
 //     try {
-//         const infor = await crawlChapterClassificationList(source);
+//         const infor = await crawlMainList(source);
 //         console.log(infor);
 //     } catch (error) {
 //         console.error('Error fetching novel content:', error);
