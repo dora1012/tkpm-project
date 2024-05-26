@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize }) => {
+const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize, currentBackground, currentFontStyle, currentFontSize }) => {
     const ref = useRef();
     const featureRef = useRef();
     const [fontSize, setFontSize] = useState(20);
@@ -8,7 +8,7 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize 
     const [isOpen, setIsOpen] = useState(false);
 
     const handleFontSizeChange = (e) => {
-        onChangeFontSize(e.target.value, 10);
+        onChangeFontSize(e.target.value);
     };
 
     const handleFontStyleChange = (e) => {
@@ -52,6 +52,7 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize 
                         <select
                         className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
                         onChange={handleBackgroundChange}
+                        value={currentBackground}
                         >
                         <option value="white">Trắng</option>
                         <option value="beige">Beige</option>
@@ -63,6 +64,7 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize 
                         <select
                         className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
                         onChange={handleFontStyleChange}
+                        value={currentFontStyle}
                         >
                         <option value="inter">Gelasio</option>
                         <option value="gelasio">Inter</option>
@@ -73,6 +75,7 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize 
                         <select
                         className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
                         onChange={handleFontSizeChange}
+                        value={currentFontSize}
                         >
                         <option value="sm">12</option>
                         <option value="base">14</option>

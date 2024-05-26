@@ -82,12 +82,15 @@ const novelReadingPage = () => {
           Chương sau
         </button>
       </div>
-      <div className={`prose max-w-none w-9/12 mx-auto text-5xl`}>
+      <div className="prose max-w-none w-9/12 mx-auto">
+        <div className={`block text-${fontSize}`}>
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem porro culpa aspernatur quidem, corporis ducimus, aperiam hic voluptas voluptatibus aliquid impedit repellendus tempora veniam, dolore eos optio deleniti ab odit laudantium! Architecto dicta error obcaecati. Voluptates magni, quae libero ut veritatis ex dolorum alias id ea, tenetur labore minus sequi aperiam perferendis accusantium ullam ad officia facere? Fuga enim similique voluptas. Et, distinctio consequatur, pariatur modi exercitationem possimus unde soluta, eligendi culpa maxime quae ipsum id nesciunt earum sunt dolorum odio vitae eveniet adipisci nemo deserunt nisi molestiae! Tenetur inventore voluptatem ab quae in aut vitae vel voluptatum, deleniti eveniet.</p>
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem porro culpa aspernatur quidem, corporis ducimus, aperiam hic voluptas voluptatibus aliquid impedit repellendus tempora veniam, dolore eos optio deleniti ab odit laudantium! Architecto dicta error obcaecati. Voluptates magni, quae libero ut veritatis ex dolorum alias id ea, tenetur labore minus sequi aperiam perferendis accusantium ullam ad officia facere? Fuga enim similique voluptas. Et, distinctio consequatur, pariatur modi exercitationem possimus unde soluta, eligendi culpa maxime quae ipsum id nesciunt earum sunt dolorum odio vitae eveniet adipisci nemo deserunt nisi molestiae! Tenetur inventore voluptatem ab quae in aut vitae vel voluptatum, deleniti eveniet.</p>
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem porro culpa aspernatur quidem, corporis ducimus, aperiam hic voluptas voluptatibus aliquid impedit repellendus tempora veniam, dolore eos optio deleniti ab odit laudantium! Architecto dicta error obcaecati. Voluptates magni, quae libero ut veritatis ex dolorum alias id ea, tenetur labore minus sequi aperiam perferendis accusantium ullam ad officia facere? Fuga enim similique voluptas. Et, distinctio consequatur, pariatur modi exercitationem possimus unde soluta, eligendi culpa maxime quae ipsum id nesciunt earum sunt dolorum odio vitae eveniet adipisci nemo deserunt nisi molestiae! Tenetur inventore voluptatem ab quae in aut vitae vel voluptatum, deleniti eveniet.</p>
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem porro culpa aspernatur quidem, corporis ducimus, aperiam hic voluptas voluptatibus aliquid impedit repellendus tempora veniam, dolore eos optio deleniti ab odit laudantium! Architecto dicta error obcaecati. Voluptates magni, quae libero ut veritatis ex dolorum alias id ea, tenetur labore minus sequi aperiam perferendis accusantium ullam ad officia facere? Fuga enim similique voluptas. Et, distinctio consequatur, pariatur modi exercitationem possimus unde soluta, eligendi culpa maxime quae ipsum id nesciunt earum sunt dolorum odio vitae eveniet adipisci nemo deserunt nisi molestiae! Tenetur inventore voluptatem ab quae in aut vitae vel voluptatum, deleniti eveniet.</p>
         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rem porro culpa aspernatur quidem, corporis ducimus, aperiam hic voluptas voluptatibus aliquid impedit repellendus tempora veniam, dolore eos optio deleniti ab odit laudantium! Architecto dicta error obcaecati. Voluptates magni, quae libero ut veritatis ex dolorum alias id ea, tenetur labore minus sequi aperiam perferendis accusantium ullam ad officia facere? Fuga enim similique voluptas. Et, distinctio consequatur, pariatur modi exercitationem possimus unde soluta, eligendi culpa maxime quae ipsum id nesciunt earum sunt dolorum odio vitae eveniet adipisci nemo deserunt nisi molestiae! Tenetur inventore voluptatem ab quae in aut vitae vel voluptatum, deleniti eveniet.</p>
+        </div>
+        
       </div>
       <div className="w-4/6 flex justify-between items-center mx-auto mb-4 mt-8">
         <button
@@ -120,6 +123,9 @@ const novelReadingPage = () => {
         onChangeBackground={setBackground} 
         onChangeFontStyle={setFontStyle} 
         onChangeFontSize={setFontSize} 
+        currentBackground={background}
+        currentFontStyle={fontStyle}
+        currentFontSize={fontSize}
       />
     </div>
   );

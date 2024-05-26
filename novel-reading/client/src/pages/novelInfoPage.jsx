@@ -48,8 +48,7 @@ const novelInfoPage = () => {
                     </div>
                 </div>
                 <TrendingNovelSideBar/>           
-            </div>
-            
+            </div>  
         </div>  
   )
 }

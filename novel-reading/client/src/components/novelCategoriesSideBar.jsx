@@ -8,7 +8,7 @@ const novelCategoriesSideBar = () => {
             <p className="text-3xl font-semibold p-4 my-5 border-b border-grey">Thể loại truyện</p>
             <ul className="columns-2 px-10 mx-auto">
                 {novelCategories.map((category, index) => (
-                        <a href={`/${slugify(category)}`}>
+                        <a href={`/the-loai/${slugify(category)}`}>
                             <p className="text-md font-semibold mb-4 hover:text-coral-pink px-3">{category}</p>
                         </a>
                 ))}
