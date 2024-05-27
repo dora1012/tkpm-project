@@ -2,13 +2,14 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.svg";
 import { useState, useRef, useEffect } from "react";
 import { slugify } from "../utils/slugify";
-import { novelCategories } from "../utils/fetchFromAPI";
 import axios from 'axios';
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [novelList, setNovelList] = useState([]); // Ensure it's initialized as an empty array
+    const [novelList, setNovelList] = useState([]); 
+    const [categoryList, setCategoryList] = useState([]);
+    const [classifyList, setClassifyList] = useState([]);
     const navigate = useNavigate();
     const [listOpen, setListOpen] = useState(false);
     const [typeOpen, setTypeOpen] = useState(false);
@@ -41,25 +42,32 @@ const Navbar = () => {
 
     useEffect(() => {
         // Fetch novel list from backend
-        const fetchNovelList = async () => {
+
+        const fetchNavBarData = async () => {
             try {
-                const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/danh-sach');
-                console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/danh-sach');
-                // Check if the response is JSON
-                // if (response.headers['content-type'].includes('application/json')) {
-                    if (Array.isArray(response.data)) {
-                        setNovelList(response.data);
-                    }
-                // } else {
-                //     throw new Error('Response is not JSON');
-                // }
+                const [novelResponse, categoryResponse, classifyResponse] = await Promise.all([
+                    axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/danh-sach'),
+                    axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/the-loai'),
+                    axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/phan-loai')
+                ]);
+
+                if (Array.isArray(novelResponse.data)) {
+                    setNovelList(novelResponse.data);
+                }
+
+                if (Array.isArray(categoryResponse.data)) {
+                    setCategoryList(categoryResponse.data);
+                }
+                if (Array.isArray(classifyResponse.data)) {
+                    setClassifyList(classifyResponse.data);
+                }
             } catch (error) {
-                console.error('Error fetching main list:', error);
+                console.error('Error fetching data:', error);
             }
         };
 
 
-        fetchNovelList();
+        fetchNavBarData();
     }, []);
 
     const arrowDown = <i className="fi fi-sr-angle-small-down mt-1"></i>;
@@ -158,7 +166,7 @@ const Navbar = () => {
                         {typeOpen && (
                             <div ref={typeRef} className="absolute border border-smoke rounded-lg bg-white">
                                 <div className="w-full columns-3 gap-10 p-3">
-                                    {novelCategories.map((category, index) => (
+                                    {categoryList.map((category, index) => (
                                         <p className="hover:text-crimson mb-5" key={index}>
                                             <Link to={`/the-loai/${slugify(category)}`}>{category}</Link>
                                         </p>
@@ -180,18 +188,11 @@ const Navbar = () => {
                         {classifyOpen && (
                             <div ref={classifyRef} className="absolute border border-smoke rounded-lg bg-white">
                                 <div className="w-full flex flex-col align-middle gap-5 p-3">
-                                    <p className="hover:text-crimson">
-                                        <Link to="/phan-loai/duoi-100-chuong">Dưới 100 chương</Link>
-                                    </p>
-                                    <p className="hover:text-crimson">
-                                        <Link to="/phan-loai/100-500-chuong">100-500 chương</Link>
-                                    </p>
-                                    <p className="hover:text-crimson">
-                                        <Link to="/phan-loai/500-1000-chuong">500-1000 chương</Link>
-                                    </p>
-                                    <p className="hover:text-crimson">
-                                        <Link to="/phan-loai/tren-1000-chuong">Trên 1000 chương</Link>
-                                    </p>
+                                    {classifyList.map((classify, index) => (
+                                        <p className="hover:text-crimson mb-5" key={index}>
+                                            <Link to={`/phan-loai/${slugify(classify)}`}>{classify}</Link>
+                                        </p>
+                                    ))}
                                 </div>
                             </div>
                         )}
