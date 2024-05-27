@@ -1,12 +1,14 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.svg";
 import { useState, useRef, useEffect } from "react";
-import { novelCategories, novelList } from "../utils/fetchFromAPI";
 import { slugify } from "../utils/slugify";
+import { novelCategories } from "../utils/fetchFromAPI";
+import axios from 'axios';
 
 const Navbar = () => {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [novelList, setNovelList] = useState([]); // Ensure it's initialized as an empty array
     const navigate = useNavigate();
     const [listOpen, setListOpen] = useState(false);
     const [typeOpen, setTypeOpen] = useState(false);
@@ -35,6 +37,29 @@ const Navbar = () => {
         return () => {
             window.removeEventListener('click', handleClickOutside);
         };
+    }, []);
+
+    useEffect(() => {
+        // Fetch novel list from backend
+        const fetchNovelList = async () => {
+            try {
+                const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/danh-sach');
+                console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/danh-sach');
+                // Check if the response is JSON
+                // if (response.headers['content-type'].includes('application/json')) {
+                    if (Array.isArray(response.data)) {
+                        setNovelList(response.data);
+                    }
+                // } else {
+                //     throw new Error('Response is not JSON');
+                // }
+            } catch (error) {
+                console.error('Error fetching main list:', error);
+            }
+        };
+
+
+        fetchNovelList();
     }, []);
 
     const arrowDown = <i className="fi fi-sr-angle-small-down mt-1"></i>;
