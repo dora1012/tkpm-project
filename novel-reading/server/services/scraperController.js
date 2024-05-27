@@ -1,5 +1,5 @@
 const scraper= require('./scraper')
-const scraperChapterContent= require('./scraperChapterContent')
+const scraperChapter= require('./scraperChapter')
 const scraperNovelInfor= require('./scraperNovelInfor')
 
 const scraperController = async (browserInstance) => {
