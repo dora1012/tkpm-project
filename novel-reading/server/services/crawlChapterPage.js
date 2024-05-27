@@ -48,14 +48,14 @@ module.exports = {
 };
 
 // TEST
-(async () => {
-  const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/chuong-2';
-  try {
-    const infor = await crawlChapter(source);
-    console.log(infor);
-  } catch (error) {
-    console.error('Error fetching chapter:', error);
-  }
-})();
+// (async () => {
+//   const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/chuong-2';
+//   try {
+//     const infor = await crawlChapter(source);
+//     console.log(infor);
+//   } catch (error) {
+//     console.error('Error fetching chapter:', error);
+//   }
+// })();
 
 

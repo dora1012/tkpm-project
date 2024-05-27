@@ -16,7 +16,7 @@ const parserBody = require('body-parser'); // Import the body-parser module
 // const mainListRoutes = require('./routes/mainListRoutes');
 const { getMainList, getNovelListOfMainList } = require('./controllers/mainListController');
 const{getCategoryList, getNovelListOfCategory} = require('./controllers/categoryController');
-const{getChapterContent} = require('./controllers/chapterController');
+const{getChapter} = require('./controllers/chapterController');
 const{getTruyenHot, getTruyenMoiCapNhat, getTruyenDaHoanThanh, getNovelInfor} = require('./controllers/novelController');
 const {getNovelListOfSearchResult} = require('./controllers/searchController')
 const {getChapterClassificationList, getNovelListOfClassification} = require('./controllers/chapterClassificationController')
@@ -40,7 +40,7 @@ app.get('/api/the-loai', getCategoryList);
 app.get('/api/the-loai/:categorySlug', getNovelListOfCategory);
 app.get('/api/phan-loai', getChapterClassificationList);
 app.get('/api/phan-loai/:classificationSlug', getNovelListOfClassification);
-app.get('/api/:novelSlug/:chapterSlug',getChapterContent);
+app.get('/api/:novelSlug/:chapterSlug',getChapter);
 
 
 //HomePage API
