@@ -11,11 +11,11 @@ const hostname = process.env.HOST_NAME || 'localhost';
 const parserBody = require('body-parser'); // Import the body-parser module
 
 
-// const novelRoutes = require('./routes/novelRoutes'); // Uncomment this line to import the novelRoutes module
-// const searchRoutes = require('./routes/searchRoutes'); // Uncomment this line to import the searchRoutes module
-const mainListRoutes = require('./routes/mainListRoutes');
+// const novelRoutes = require('./routes/novelRoutes'); 
+// const searchRoutes = require('./routes/searchRoutes');
+// const mainListRoutes = require('./routes/mainListRoutes');
 const { getMainList, getNovelListOfMainList } = require('./controllers/mainListController');
-const{getChapter} = require('./controllers/chapterController');
+const{getChapterContent} = require('./controllers/chapterController');
 const { get } = require('request-promise');
 
 app.use(cors());
@@ -25,10 +25,13 @@ app.use(parserBody.json());
 // Use the routes
 // app.use('/api', novelRoutes); // Uncomment this line to use the novelRoutes
 // app.use('/api', searchRoutes); // Uncomment this line to use the searchRoutes
-// app.use('/api', mainListRoutes); 
+// app.use('/api', mainListRoutes);
+
 
 // Test endpoint for main list
-// app.get('/test-main-list',getNovelListOfMainList);
+app.get('/api/danh-sach',getMainList);
+app.get('/api/:novelSlug/:chapterSlug',getChapterContent);
+
 
 
 // // Test endpoint for novel list of a specific type
