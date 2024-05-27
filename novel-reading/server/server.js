@@ -15,7 +15,7 @@ const parserBody = require('body-parser'); // Import the body-parser module
 // const searchRoutes = require('./routes/searchRoutes'); // Uncomment this line to import the searchRoutes module
 const mainListRoutes = require('./routes/mainListRoutes');
 const { getMainList, getNovelListOfMainList } = require('./controllers/mainListController');
-const{getChapterContent} = require('./controllers/chapterController');
+const{getChapter} = require('./controllers/chapterController');
 const { get } = require('request-promise');
 
 app.use(cors());
@@ -25,7 +25,7 @@ app.use(parserBody.json());
 // Use the routes
 // app.use('/api', novelRoutes); // Uncomment this line to use the novelRoutes
 // app.use('/api', searchRoutes); // Uncomment this line to use the searchRoutes
-app.use('/api', mainListRoutes); 
+// app.use('/api', mainListRoutes); 
 
 // Test endpoint for main list
 // app.get('/test-main-list',getNovelListOfMainList);
