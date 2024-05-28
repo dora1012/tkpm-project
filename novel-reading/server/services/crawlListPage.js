@@ -36,7 +36,7 @@ module.exports = {
 
 // TEST
 // (async () => {
-//   const source = 'https://truyenfull.vn/danh-sach/tien-hiep-hay/';
+//   const source = 'https://truyenfull.vn/the-loai/dam-my/';
 //   try {
 //     const novelList = await crawlNovelList(source);
 //     console.log(novelList);

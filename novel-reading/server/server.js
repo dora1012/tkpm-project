@@ -11,11 +11,11 @@ const hostname = process.env.HOST_NAME || 'localhost';
 const parserBody = require('body-parser'); // Import the body-parser module
 
 
-// const novelRoutes = require('./routes/novelRoutes'); 
-// const searchRoutes = require('./routes/searchRoutes');
-// const mainListRoutes = require('./routes/mainListRoutes');
+// const novelRoutes = require('./routes/novelRoutes'); // Uncomment this line to import the novelRoutes module
+// const searchRoutes = require('./routes/searchRoutes'); // Uncomment this line to import the searchRoutes module
+const mainListRoutes = require('./routes/mainListRoutes');
 const { getMainList, getNovelListOfMainList } = require('./controllers/mainListController');
-const{getChapterContent} = require('./controllers/chapterController');
+const{getChapter} = require('./controllers/chapterController');
 const { get } = require('request-promise');
 
 app.use(cors());
@@ -29,9 +29,7 @@ app.use(parserBody.json());
 
 
 // Test endpoint for main list
-app.get('/api/danh-sach',getMainList);
-app.get('/api/:novelSlug/:chapterSlug',getChapterContent);
-
+// app.get('/test-main-list',getNovelListOfMainList);
 
 
 // // Test endpoint for novel list of a specific type
@@ -46,6 +44,8 @@ app.get('/api/:novelSlug/:chapterSlug',getChapterContent);
 //     res.status(500).json({ error: 'Failed to fetch novel list' });
 //   }
 // });
+
+
 
 
 // Error handling middleware

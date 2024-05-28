@@ -91,7 +91,7 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize,
                         type="number"
                         value={currentLineSpacing}
                         onChange={(e) => onChangeLineSpacing(parseFloat(e.target.value))}
-                        step="0.5"
+                        step="0.2"
                         />
                     </div>
                 </div>

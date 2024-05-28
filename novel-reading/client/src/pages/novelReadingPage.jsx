@@ -7,14 +7,6 @@ import SettingPanel from '../components/settingPanel';
 import { useEffect } from 'react';
 import axios from 'axios';
 
-const decodeHTMLEntities = (text) => {
-  const element = document.createElement('div');
-  if (text) {
-    element.innerHTML = text;
-    return element.textContent;
-  }
-  return '';
-};
 
 const novelReadingPage = () => {
   
@@ -28,29 +20,22 @@ const novelReadingPage = () => {
   // const novel = novelData.find(n => slugify(n.novelTitle) === slug);
   const currentChapter = parseInt(extractChapterNumber(chapterNumber), 10);
 
-  useEffect(() => {
-    // Fetch novel list from backend
-    const fetchNovelContent = async () => {
-        try {
-            const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/' +slug+ '/' +chapterNumber);
-            console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/' + slug + '/' + chapterNumber);
-            // Check if the response is JSON
-            // if (response.headers['content-type'].includes('application/json')) 
-                    const data =response.data;
-
-                    setNovelData(data);
-
-            // } else {
-            //     throw new Error('Response is not JSON');
-            // }
-        } catch (error) {
-            console.error('Error fetching chapter content:', error);
-        }
-    };
+    useEffect(() => {
+      // Fetch novel list from backend
+      const fetchNovelContent = async () => {
+          try {
+              const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/' +slug+ '/' +chapterNumber);
+              console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/' + slug + '/' + chapterNumber);
+              const data =response.data;
+              setNovelData(data);
+          } catch (error) {
+              console.error('Error fetching chapter content:', error);
+          }
+      };
 
 
-    fetchNovelContent();
-}, []);
+      fetchNovelContent();
+    }, []);
 
   const [background, setBackground] = useState('white');
   const [fontSize, setFontSize] = useState(20);

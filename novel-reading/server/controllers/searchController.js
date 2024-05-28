@@ -2,19 +2,21 @@
 const { crawlSearchResults } = require('../services/crawlSearchPage'); 
 const {crawlNovelList } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
+const { encodeKeyword } = require('../utils/encodeKeyword');
 
-const searchUrl= `${defaultSource}/tim-kiem/`;
 
 
 
 const getNovelListOfSearchResult = async (req, res) => {
-  const keyword = req.query;
+  var keyword = req.query.tukhoa;
+  keyword=encodeKeyword(keyword);
+  console.log(req.query);
   if (!keyword) {
     return res.status(400).json({ error: 'Keyword is required' });
   }
 
   try {
-    searchUrl=`${searchUrl}?tukhoa=${keyword}`
+    const searchUrl=`${defaultSource}/tim-kiem/?tukhoa=${keyword}`
     const searchResults = await crawlNovelList(searchUrl);
     res.json(searchResults);
   } catch (error) {

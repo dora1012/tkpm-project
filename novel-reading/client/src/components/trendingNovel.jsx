@@ -1,35 +1,28 @@
-import { novelData } from '../utils/fetchFromAPI';
 import axios from 'axios';
 import {slugify} from '../utils/slugify'
 import { useEffect, useState } from 'react';
 
 
 const trendingNovel = () => {
-    // const [novelData, setNovelData] = useState([]);
-    // const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState(null);
+    const [novelData, setNovelData] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await axios.get('/api/truyen-hot');
-    //             if (Array.isArray(response.data)) {
-    //                 setNovelData(response.data);
-    //             } else {
-    //                 throw new Error('Unexpected response format');
-    //             }
-    //             setLoading(false);
-    //         } catch (err) {
-    //             setError(err.message || 'Unknown error');
-    //             setLoading(false);
-    //         }
-    //     };
+    useEffect(() => {
+        // Fetch novel list from backend
+        const fetchTrendingNovel = async () => {
+            try {
+                const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/truyen-hot');
+                console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/truyen-hot');
+                const data =response.data;
+                setNovelData(data);
+            } catch (error) {
+                console.error('Error fetching trending novel:', error);
+            }
+        };
+  
+  
+        fetchTrendingNovel();
+      }, []);
 
-    //     fetchData();
-    // }, []);
-
-    // if (loading) return <div>Loading...</div>;
-    // if (error) return <div>Error: {error.message}</div>;
 
     return (
         <div className='container w-10/12 mx-auto'>
@@ -40,10 +33,10 @@ const trendingNovel = () => {
             </div>
             {/* Cards */}
             <div>
-                <div className='ml-20 grid grid-cols-2 sm:grid-cols-6 gap-2'>
+                <div className='ml-20 grid grid-cols-2 sm:grid-cols-8 gap-2'>
                     {novelData.map((novel) => (
                         <a href={`/${slugify(novel.title)}`} key={novel.title} className='mb-5 cursor-pointer rounded-md hover:shadow-md p-3'>
-                            <img src={novel.img} alt="Novel Image" className='w-[129px] h-[192px] object-cover rounded-md mx-auto' />
+                            <img src={novel.image} alt="Novel Image" className='w-[129px] h-[192px] object-cover rounded-md mx-auto' />
                             <div className='flex flex-col items-center mt-1'>
                                 <p className='font-semibold'>{novel.title}</p>
                                 {/* <p className='text-md text-center'>{novel.author}</p> */}

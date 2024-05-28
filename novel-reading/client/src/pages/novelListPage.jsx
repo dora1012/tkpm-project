@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../components/pagination';
 import axios from 'axios'
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useParams } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
 
-const novelSearchingPage = () => {
-    const location = useLocation();
-    const query = new URLSearchParams(location.search).get('query') || '';
 
+const novelListPage = ({type}) => {
+    const { subitem } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     const novelsPerPage = 10;
     const [novelData, setNovelData] = useState([]);
@@ -15,7 +14,7 @@ const novelSearchingPage = () => {
         // Fetch novel information from backend
         const fetchSearchResult = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/?tukhoa=${query}`);
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}`);
                 setNovelData(response.data);
             } catch (error) {
                 console.error('Error fetching search result:', error);
@@ -23,14 +22,14 @@ const novelSearchingPage = () => {
         };
 
         fetchSearchResult();
-    }, []);
+    }, [subitem]);
 
 
     // Paginate the filtered novels
     const totalPages = Math.ceil(novelData.length / novelsPerPage);
     return (
         <div className="p-4 w-9/12 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Kết quả tìm kiếm cho: {query}</h1>
+            <h1 className="text-2xl font-bold mb-4">{subitem}</h1>
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                 {novelData.map((novel) => (
                         <Link
@@ -42,7 +41,7 @@ const novelSearchingPage = () => {
                                 <img
                                     src={novel.image}
                                     alt="Novel Image"
-                                    className="w-[129px] h-[192px] object-cover rounded-md"
+                                    className="w-[50px] h-[75px] object-cover rounded-md"
                                 />
                                 <div className="flex flex-col mt-1 ml-5 gap-4">
                                     <div className="flex">
@@ -82,6 +81,6 @@ const novelSearchingPage = () => {
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
     );
-};
+}
 
-export default novelSearchingPage;
+export default novelListPage
