@@ -42,7 +42,6 @@ const getNovelInfor = async (req, res) => {
   try {
     const {novelSlug} = req.params;
     const url = `${defaultSource}/${novelSlug}/`
-    console.log(url);
     const novelInfor = await crawlNovelInfo(url);
     res.json(novelInfor);  
   } catch (error) {  

@@ -2,6 +2,6 @@ const express = require('express');
 const searchController = require('../controllers/searchController');
 const router = express.Router();
 
-router.get('/tim-kiem', searchController.getNovelListOfSearchResult);
+router.get('/', searchController.getNovelListOfSearchResult);
 
 module.exports = router;

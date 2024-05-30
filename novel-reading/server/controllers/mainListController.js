@@ -6,7 +6,6 @@ const {defaultSource} = require('../config/sources');
 const getMainList = async (req, res) => {
   try {
     const mainList = await crawlMainList(defaultSource);
-    res.json(mainList);
   } catch (error) {
     console.error(error);
     res.status(500).json({error: 'Internal Server Error - MAIN LIST'});

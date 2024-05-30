@@ -6,6 +6,7 @@ const {defaultSource} = require('../config/sources');
 const getChapterClassificationList = async (req, res) => {
   try {
     const chapterClassificationList = await crawlChapterClassificationList(defaultSource);
+    console.log(chapterClassificationList);
     res.json(chapterClassificationList);  
   } catch (error) {
     console.error(error);
