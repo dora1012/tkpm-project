@@ -1,7 +1,6 @@
-const {   crawlTruyenHot, crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh, } = require('../services/crawlHomePage');
+const {crawlTruyenHot, crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh} = require('../services/crawlHomePage');
 const {crawlNovelInfo}= require('../services/crawlNovelInforPage')
-const { defaultSource } = require('../config/sources');
-
+const {defaultSource} = require('../config/sources');
 
 // const searchUrl=`${searchUrl}/tim-kiem`;
 
@@ -12,7 +11,7 @@ const getTruyenHot = async (req, res) => {
     res.json(truyenHot);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error - TRUYEN HOT CONTROLLER' });
+    res.status(500).json({error: 'Internal Server Error - TRUYEN HOT CONTROLLER'});
   }
 };
 
@@ -23,7 +22,7 @@ const getTruyenMoiCapNhat = async (req, res) => {
     res.json(truyenMoiCapNhat);  
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error - TRUYEN MOI CAP NHAT CONTROLLER' });
+    res.status(500).json({error: 'Internal Server Error - TRUYEN MOI CAP NHAT CONTROLLER'});
   }
 };
 
@@ -34,25 +33,23 @@ const getTruyenDaHoanThanh = async (req, res) => {
     res.json(truyenDaHoanThanh);  
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error - TRUYEN DA HOAN THANH CONTROLLER' });
+    res.status(500).json({error: 'Internal Server Error - TRUYEN DA HOAN THANH CONTROLLER'});
   }
 };
 
-
 // used for Novel Infor Page
-const getNovelInfor= async (req, res) => {
+const getNovelInfor = async (req, res) => {
   try {
-    const{novelSlug} =req.params;
-    const url= `${defaultSource}/${novelSlug}/`
+    const {novelSlug} = req.params;
+    const url = `${defaultSource}/${novelSlug}/`
+    console.log(url);
     const novelInfor = await crawlNovelInfo(url);
     res.json(novelInfor);  
   } catch (error) {  
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error - NOVEL INFOR CONTROLLER' });
+    res.status(500).json({error: 'Internal Server Error - NOVEL INFOR CONTROLLER'});
   }
 };
-
-
 
 module.exports = {
   getTruyenHot,
