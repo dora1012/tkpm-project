@@ -1,4 +1,4 @@
-module.exports={
+module.exports = {
     truyenfull:{
         url:'https://truyenfull.vn'
     },
