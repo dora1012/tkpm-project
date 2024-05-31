@@ -5,25 +5,27 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 const hostname = process.env.HOST_NAME || 'localhost';
-
+const route = require('./routes');
 const parserBody = require('body-parser'); // Import the body-parser module
 
 app.use(cors());
 app.use(parserBody.json());
 
-const mainListRoutes = require('./routes/mainListRoutes');
-const catygoryRoutes = require('./routes/categoryRoutes');
-const chapterRoutes = require('./routes/chapterRoutes');
-const novelRoutes = require('./routes/novelRoutes');
-const searchRoutes = require('./routes/searchRoutes');
-const chapterClassificationRoutes = require('./routes/chapterClassificationRoutes');
+route(app);
 
-app.use('/api/danh-sach', mainListRoutes);
-app.use('/api/the-loai', catygoryRoutes);
-//app.use('/api', chapterRoutes);
-app.use('/api', novelRoutes);
-app.use('/api/tim-kiem', searchRoutes);
-app.use('/api/phan-loai', chapterClassificationRoutes);
+// const mainListRoutes = require('./routes/mainListRoutes');
+// const catygoryRoutes = require('./routes/categoryRoutes');
+// const chapterRoutes = require('./routes/chapterRoutes');
+// const novelRoutes = require('./routes/novelRoutes');
+// const searchRoutes = require('./routes/searchRoutes');
+// const chapterClassificationRoutes = require('./routes/chapterClassificationRoutes');
+
+// app.use('/api/danh-sach', mainListRoutes);
+// app.use('/api/the-loai', catygoryRoutes);
+// //app.use('/api', chapterRoutes);
+// app.use('/api', novelRoutes);
+// app.use('/api/tim-kiem', searchRoutes);
+// app.use('/api/phan-loai', chapterClassificationRoutes);
 // const novelRoutes = require('./routes/novelRoutes'); // Uncomment this line to import the novelRoutes module
 // const searchRoutes = require('./routes/searchRoutes'); // Uncomment this line to import the searchRoutes module
 //const {getMainList, getNovelListOfMainList} = require('./controllers/mainListController');
