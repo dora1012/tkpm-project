@@ -1,10 +1,7 @@
-// const express = require('express');
-// const { searchController } = require('../controllers/searchController'); // Adjust the path as needed
-// const router = express.Router();
+const express = require('express');
+const searchController = require('../controllers/searchController');
+const router = express.Router();
 
+router.get('/', searchController.getNovelListOfSearchResult);
 
-
-// // Search route
-// router.get('/tim-kiem', searchController);
-
-// module.exports = router;
+module.exports = router;

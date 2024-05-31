@@ -1,9 +1,8 @@
 const express = require('express');
-const {getMainList, getNovelListOfMainList} = require('../controllers/mainListController');
+const mainListController = require('../controllers/mainListController');
 const router = express.Router();
 
-router.get('/danh-sach', getMainList);
-
-router.get('/danh-sach/:listSlug', getNovelListOfMainList);
+router.get('/:listSlug', mainListController.getNovelListOfMainList);
+router.get('/', mainListController.getMainList);
 
 module.exports = router;

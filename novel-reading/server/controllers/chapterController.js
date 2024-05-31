@@ -1,11 +1,11 @@
 const {crawlChapter} = require('../services/crawlChapterPage')
-const { defaultSource } = require('../config/sources');
+const {defaultSource} = require('../config/sources');
 
 
 // used for Chapter Content Page
-const getChapter= async (req, res) => {
+const getChapter = async (req, res) => {
     try {
-      const{novelSlug, chapterSlug } =req.params;
+      const{novelSlug, chapterSlug} = req.params;
       const url= `${defaultSource}/${novelSlug}/${chapterSlug}/`
       const chapter = await crawlChapter(url);
       res.json(chapter);  
