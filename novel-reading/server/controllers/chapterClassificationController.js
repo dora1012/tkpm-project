@@ -1,6 +1,6 @@
-const {crawlChapterClassificationList} = require('../services/crawlHomePage');
-const {crawlNovelList} = require('../services/crawlListPage');
-const {defaultSource} = require('../config/sources');
+const { crawlChapterClassificationList } = require('../services/crawlHomePage');
+const { crawlNovelList } = require('../services/crawlListPage');
+const { defaultSource } = require('../config/sources');
 
 // used for Navigation Bar 
 const getChapterClassificationList = async (req, res) => {
@@ -9,20 +9,20 @@ const getChapterClassificationList = async (req, res) => {
     res.json(chapterClassificationList);  
   } catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Internal Server Error - CLASSIFICATION LIST CONTROLLER '});
+    res.status(500).json({ error: 'Internal Server Error - CLASSIFICATION LIST CONTROLLER' });
   }
 };
 
 // used for Classification List of Each Type in Classification
 const getNovelListOfClassification = async (req, res) => {
   try {
-    const {classificationSlug} = req.params;
+    const { classificationSlug } = req.params;
     const classificationUrl = `${defaultSource}/top-truyen/${classificationSlug}/`;
     const novels = await crawlNovelList(classificationUrl);
     res.json(novels);  
   } catch (error) {  
     console.error(error);
-    res.status(500).json({error: 'Internal Server Error - NOVEL CLASSIFICATION LIST CONTROLLER'});
+    res.status(500).json({ error: 'Internal Server Error - NOVEL CLASSIFICATION LIST CONTROLLER' });
   }
 };
 
