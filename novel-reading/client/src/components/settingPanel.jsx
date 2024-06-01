@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize, onChangeLineSpacing, currentLineSpacing, currentBackground, currentFontStyle, currentFontSize }) => {
     const ref = useRef();
     const featureRef = useRef();
-    const [fontSize, setFontSize] = useState('2xl');
-    const [background, setBackground] = useState('white');
+    const [fontSize, setFontSize] = useState(parseInt(localStorage.getItem('fontSize')) || 20);
+    const [background, setBackground] = useState(localStorage.getItem('background') || 'white');
     const [isOpen, setIsOpen] = useState(false);
 
     const handleFontSizeChange = (e) => {

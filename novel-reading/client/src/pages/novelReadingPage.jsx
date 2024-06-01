@@ -51,7 +51,7 @@ const novelReadingPage = () => {
   // Get settings from local storage
 
   const [background, setBackground] = useState(localStorage.getItem('background') || 'white');
-  const [fontSize, setFontSize] = useState(localStorage.getItem('fontSize') || '2xl');
+  const [fontSize, setFontSize] = useState(localStorage.getItem('fontSize') || 'base');
   const [fontStyle, setFontStyle] = useState(localStorage.getItem('fontStyle') || 'sans-serif');
   const [lineSpacing, setLineSpacing] = useState(parseFloat(localStorage.getItem('lineSpacing')) || 1.5);
 
