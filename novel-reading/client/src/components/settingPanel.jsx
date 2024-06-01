@@ -3,21 +3,30 @@ import React, { useState, useRef, useEffect } from 'react';
 const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize, onChangeLineSpacing, currentLineSpacing, currentBackground, currentFontStyle, currentFontSize }) => {
     const ref = useRef();
     const featureRef = useRef();
-    const [fontSize, setFontSize] = useState(20);
-    const [background, setBackground] = useState('white');
+    const [fontSize, setFontSize] = useState(parseInt(localStorage.getItem('fontSize')) || 20);
+    const [background, setBackground] = useState(localStorage.getItem('background') || 'white');
     const [isOpen, setIsOpen] = useState(false);
 
     const handleFontSizeChange = (e) => {
         onChangeFontSize(e.target.value);
+        localStorage.setItem('fontSize', e.target.value);
     };
 
     const handleFontStyleChange = (e) => {
         onChangeFontStyle(e.target.value);
-      };
+        localStorage.setItem('fontStyle', e.target.value);
+    };
 
     const handleBackgroundChange = (e) => {
         onChangeBackground(e.target.value);
+        localStorage.setItem('background', e.target.value);
     };
+
+    const handleLineSpacingChange = (e) => {
+        const value = parseFloat(e.target.value);
+        onChangeLineSpacing(value);
+        localStorage.setItem('lineSpacing', value);
+    }
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -33,7 +42,7 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize,
         };
     }, []);
 
-    
+
     return (
         <div className="fixed top-1/3 right-20 transform -translate-y-1/2 z-50">
             <button
@@ -50,24 +59,24 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize,
                     <div className="mb-4">
                         <label className="block mb-2">Màu nền</label>
                         <select
-                        className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
-                        onChange={handleBackgroundChange}
-                        value={currentBackground}
+                            className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
+                            onChange={handleBackgroundChange}
+                            value={currentBackground}
                         >
-                        <option value="white">Trắng</option>
-                        <option value="beige">Beige</option>
-                        <option value="black">Black</option>
+                            <option value="white">Trắng</option>
+                            <option value="beige">Beige</option>
+                            <option value="black">Black</option>
                         </select>
                     </div>
                     <div className="mb-4">
                         <label className="block mb-2">Font chữ</label>
                         <select
-                        className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
-                        onChange={handleFontStyleChange}
-                        value={currentFontStyle}
+                            className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
+                            onChange={handleFontStyleChange}
+                            value={currentFontStyle}
                         >
-                        <option value="inter">Gelasio</option>
-                        <option value="gelasio">Inter</option>
+                            <option value="inter">Gelasio</option>
+                            <option value="gelasio">Inter</option>
                         </select>
                     </div>
                     <div className="mb-4">
@@ -88,10 +97,10 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize,
                     <div>
                         <label >Độ giãn dòng:</label>
                         <input className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
-                        type="number"
-                        value={currentLineSpacing}
-                        onChange={(e) => onChangeLineSpacing(parseFloat(e.target.value))}
-                        step="0.2"
+                            type="number"
+                            value={currentLineSpacing}
+                            onChange={handleLineSpacingChange}
+                            step="0.2"
                         />
                     </div>
                 </div>
