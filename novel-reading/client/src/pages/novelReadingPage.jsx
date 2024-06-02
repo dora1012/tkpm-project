@@ -81,7 +81,7 @@ const novelReadingPage = () => {
   //     navigate(`/${slug}/chuong-${currentChapter + 1}`);
   //   }
   // };
-
+  
   return (
     <div className={`container mx-auto p-8 w-full shadow ${textColor}`} style={{ backgroundColor: background, fontFamily: fontStyle }}>
       <div className="flex flex-col items-center justify-center gap-6">
@@ -117,10 +117,10 @@ const novelReadingPage = () => {
         </button>
       </div> */}
       <div className="prose max-w-none w-9/12 mx-auto">
-        <div style={{ lineHeight: `${lineSpacing}` }}>
+      <div style={{lineHeight: `${lineSpacing}` }}>
           {novelData.chapterContent && (
-            <div className={`text-${fontSize}`} dangerouslySetInnerHTML={{ __html: novelData.chapterContent }} ></div>
-          )}
+            <div className="text-inherit" dangerouslySetInnerHTML={{ __html: replacePTags(novelData.chapterContent) }} ></div>
+          )} 
         </div>
 
       </div>

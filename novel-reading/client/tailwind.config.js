@@ -33,6 +33,7 @@ export default {
           '3xl': '28px',
           '4xl': '38px',
           '5xl': '50px',
+          inherit: 'inherit'
       },
 
       extend: {
