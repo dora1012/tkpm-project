@@ -64,8 +64,8 @@ const settingPanel = ({ onChangeBackground, onChangeFontStyle, onChangeFontSize,
                             value={currentBackground}
                         >
                             <option value="white">Trắng</option>
-                            <option value="beige">Beige</option>
-                            <option value="black">Black</option>
+                            <option value="beige">Be</option>
+                            <option value="black">Đen</option>
                         </select>
                     </div>
                     <div className="mb-4">
