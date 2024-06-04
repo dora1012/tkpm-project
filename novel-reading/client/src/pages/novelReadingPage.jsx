@@ -164,10 +164,6 @@ const novelReadingPage = () => {
         onChangeBackground={setBackground}
         onChangeFontStyle={setFontStyle}
         onChangeFontSize={setFontSize}
-      <SettingPanel
-        onChangeBackground={setBackground}
-        onChangeFontStyle={setFontStyle}
-        onChangeFontSize={setFontSize}
         onChangeLineSpacing={setLineSpacing}
         currentBackground={background}
         currentFontStyle={fontStyle}
