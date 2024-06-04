@@ -13,20 +13,33 @@ const settingPanel = ({
 }) => {
   const ref = useRef();
   const featureRef = useRef();
-  const [fontSize, setFontSize] = useState(20);
-  const [background, setBackground] = useState("white");
+  const [fontSize, setFontSize] = useState(
+    parseInt(localStorage.getItem("fontSize")) || 20
+  );
+  const [background, setBackground] = useState(
+    localStorage.getItem("background") || "white"
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFontSizeChange = (e) => {
     onChangeFontSize(e.target.value);
+    localStorage.setItem("fontSize", e.target.value);
   };
 
   const handleFontStyleChange = (e) => {
     onChangeFontStyle(e.target.value);
+    localStorage.setItem("fontStyle", e.target.value);
   };
 
   const handleBackgroundChange = (e) => {
     onChangeBackground(e.target.value);
+    localStorage.setItem("background", e.target.value);
+  };
+
+  const handleLineSpacingChange = (e) => {
+    const value = parseFloat(e.target.value);
+    onChangeLineSpacing(value);
+    localStorage.setItem("lineSpacing", value);
   };
 
   useEffect(() => {
@@ -48,7 +61,7 @@ const settingPanel = ({
   }, []);
 
   return (
-    <div className="fixed top-1/4 right-20 transform -translate-y-1/2 z-50">
+    <div className="fixed top-1/3 right-20 transform -translate-y-1/2 z-50">
       <button
         ref={featureRef}
         onClick={() => setIsOpen(!isOpen)}
@@ -62,7 +75,7 @@ const settingPanel = ({
           ref={ref}
           className="absolute right-0 top-14 w-64 bg-white text-coral-pink p-4 rounded-lg shadow-lg"
         >
-          <p className="text-2xl font-semibold mb-4">Cài đặt tuỳ chọn</p>
+          <p className="text-2xl font-semibold mb-4">Cài đặt hiển thị</p>
           <div className="mb-4">
             <label className="block mb-2">Màu nền</label>
             <select
@@ -71,8 +84,8 @@ const settingPanel = ({
               value={currentBackground}
             >
               <option value="white">Trắng</option>
-              <option value="beige">Beige</option>
-              <option value="black">Black</option>
+              <option value="beige">Be</option>
+              <option value="black">Đen</option>
             </select>
           </div>
           <div className="mb-4">
@@ -101,20 +114,16 @@ const settingPanel = ({
               <option value="4xl">38</option>
             </select>
           </div>
-          <div className="mb-4">
+          <div>
             <label>Độ giãn dòng:</label>
             <input
               className="block w-full border border-smoke bg-white text-smoke py-2 px-4 rounded"
               type="number"
               value={currentLineSpacing}
-              onChange={(e) => onChangeLineSpacing(parseFloat(e.target.value))}
+              onChange={handleLineSpacingChange}
               step="0.2"
             />
           </div>
-          {/* <div className="mb-4">
-            <label className="block mb-2">Xuất bản eBook</label>
-            <ExportSettingsPanel content="Raiden Shogun" />
-          </div> */}
         </div>
       )}
     </div>

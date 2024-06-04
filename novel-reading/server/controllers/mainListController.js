@@ -16,7 +16,10 @@ const getMainList = async (req, res) => {
 // used for Novel List of Each Type in MainList
 const getNovelListOfMainList = async (req, res) => {
   try {
-    const { listSlug } = req.params;
+    var { listSlug } = req.params;
+    if(listSlug === 'truyen-moi-cap-nhat') {
+      listSlug = 'truyen-moi';
+    }
     const listUrl = `${defaultSource}/danh-sach/${listSlug}/`;
     const novels = await crawlNovelList(listUrl);
     res.json(novels);

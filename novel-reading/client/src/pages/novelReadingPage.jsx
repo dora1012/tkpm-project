@@ -28,34 +28,36 @@ const novelReadingPage = () => {
     // Fetch novel list from backend
     const fetchNovelContent = async () => {
       try {
-        const response = await axios.get(
-          import.meta.env.VITE_SERVER_DOMAIN +
-            "/api/" +
-            slug +
-            "/" +
-            chapterNumber
-        );
-        console.log(
-          import.meta.env.VITE_SERVER_DOMAIN +
-            "/api/" +
-            slug +
-            "/" +
-            chapterNumber
-        );
+        const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/' + slug + '/' + chapterNumber);
+        console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/' + slug + '/' + chapterNumber);
         const data = response.data;
         setNovelData(data);
+
+        // Mark the chapter as read in local storage
+        let readChapters = JSON.parse(localStorage.getItem(slug)) || [];
+        if (!readChapters.includes(chapterNumber)) {
+          readChapters.push(chapterNumber);
+          localStorage.setItem(slug, JSON.stringify(readChapters));
+        }
+
+        // Mark the last read chapter in local storage
+        localStorage.setItem(slug + '-last-read', chapterNumber);
+
       } catch (error) {
-        console.error("Error fetching chapter content:", error);
+        console.error('Error fetching chapter content:', error);
       }
     };
 
-    fetchNovelContent();
-  }, []);
 
-  const [background, setBackground] = useState("white");
-  const [fontSize, setFontSize] = useState(20);
-  const [fontStyle, setFontStyle] = useState("sans-serif");
-  const [lineSpacing, setLineSpacing] = useState(1.5);
+    fetchNovelContent();
+  }, [slug, chapterNumber]); // Add dependencies to the useEffect hook
+
+  // Get settings from local storage
+
+  const [background, setBackground] = useState(localStorage.getItem('background') || 'white');
+  const [fontSize, setFontSize] = useState(localStorage.getItem('fontSize') || 'base');
+  const [fontStyle, setFontStyle] = useState(localStorage.getItem('fontStyle') || 'sans-serif');
+  const [lineSpacing, setLineSpacing] = useState(parseFloat(localStorage.getItem('lineSpacing')) || 1.5);
 
   const isDarkBackground = (color) => {
     const darkColors = ["black"];
@@ -83,7 +85,9 @@ const novelReadingPage = () => {
   //     navigate(`/${slug}/chuong-${currentChapter + 1}`);
   //   }
   // };
-
+  const replacePTags = (htmlString) => {
+    return htmlString.replace(/<p>/g, '').replace(/<\/p>/g, '');
+  };
   return (
     <div
       className={`container mx-auto p-8 w-full shadow ${textColor}`}
@@ -124,12 +128,10 @@ const novelReadingPage = () => {
       <div className="prose max-w-none w-9/12 mx-auto">
         <div style={{ lineHeight: `${lineSpacing}` }}>
           {novelData.chapterContent && (
-            <div
-              className={`text-${fontSize}`}
-              dangerouslySetInnerHTML={{ __html: novelData.chapterContent }}
-            ></div>
-          )}
+            <div  className={`text-${fontSize}`}  dangerouslySetInnerHTML={{ __html: replacePTags(novelData.chapterContent) }} ></div>
+          )} 
         </div>
+
       </div>
       {/* <div className="w-4/6 flex justify-between items-center mx-auto mb-4 mt-8">
         <button
@@ -158,6 +160,10 @@ const novelReadingPage = () => {
           Chương sau
         </button>
       </div> */}
+      <SettingPanel
+        onChangeBackground={setBackground}
+        onChangeFontStyle={setFontStyle}
+        onChangeFontSize={setFontSize}
       <SettingPanel
         onChangeBackground={setBackground}
         onChangeFontStyle={setFontStyle}
