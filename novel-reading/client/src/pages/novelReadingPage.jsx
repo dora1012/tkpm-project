@@ -6,6 +6,8 @@ import { slugify } from "../utils/slugify";
 import SettingPanel from "../components/settingPanel";
 import { useEffect } from "react";
 import axios from "axios";
+import ExportSettingsPanel from "../components/exportSettingsPanel";
+import { useLocation } from "react-router-dom";
 
 const novelReadingPage = () => {
   const extractChapterNumber = (chapterString) => {
@@ -17,6 +19,10 @@ const novelReadingPage = () => {
   const navigate = useNavigate();
   // const novel = novelData.find(n => slugify(n.novelTitle) === slug);
   const currentChapter = parseInt(extractChapterNumber(chapterNumber), 10);
+
+  // const location = useLocation();
+  // const authors = location.state?.authors || "Unknown Author";
+  // console.log(authors);
 
   useEffect(() => {
     // Fetch novel list from backend
@@ -185,6 +191,12 @@ const novelReadingPage = () => {
         currentFontStyle={fontStyle}
         currentFontSize={fontSize}
         currentLineSpacing={lineSpacing}
+      />
+      <ExportSettingsPanel
+        chapterContent={novelData.chapterContent || ""}
+        novelTitle={novelData.novelTitle || ""}
+        chapterTitle={novelData.chapterTitle || ""}
+        author={""}
       />
     </div>
   );
