@@ -61,7 +61,7 @@ const ExportSettingsPanel = ({
   };
 
   return (
-    <div className="fixed top-1/4 left-20 transform -translate-y-1/2 z-50">
+    <div className="fixed top-1/4 right-20 transform -translate-y-1/2 z-50">
       <button
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
@@ -73,7 +73,7 @@ const ExportSettingsPanel = ({
       {isOpen && (
         <div
           ref={ref}
-          className="absolute left-0 top-14 w-64 bg-white text-coral-pink p-4 rounded-lg shadow-lg"
+          className="absolute right-0 top-14 w-64 bg-white text-coral-pink p-4 rounded-lg shadow-lg"
         >
           <p className="text-2xl font-semibold mb-4">Xuất bản eBook</p>
           <select
