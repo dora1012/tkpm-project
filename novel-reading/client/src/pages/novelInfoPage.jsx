@@ -6,13 +6,11 @@ import axios from 'axios'
 
 
 const novelInfoPage = () => {
-    const { slug } = useParams(); // Get the slug from URL
-    // const novel = novelData.find(n => slugify(n.title) === slug); // Find the novel matching the slug
-    // // const firstChapter = novel.chapterList[0];
-    // if (!novel) {
-    //   return <div className='text-4xl text-red mx-auto my-auto'>Page not found</div>; // Handle case where novel is not found
-    // }
+    const { slug } = useParams(); 
     const [novelData, setNovelData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+
     useEffect(() => {
         // Fetch novel information from backend
         const fetchNovelInfo = async () => {
@@ -22,6 +20,9 @@ const novelInfoPage = () => {
                 setNovelData(response.data);
             } catch (error) {
                 console.error('Error fetching novel info:', error);
+            }
+            finally {
+                setLoading(false);
             }
         };
 
@@ -45,30 +46,50 @@ const novelInfoPage = () => {
         <div>
             <div className="bg-coral-pink">
                 <div className="container w-9/12 mx-auto flex gap-20 px-20 py-20 bg-white">
-                    <img src={image} alt="Cover" className="h-[310px] w-[220px] object-cover" />
-                    <div className="book-info flex flex-col flex-wrap gap-7">
-                        <h1 className="text-3xl">{title}</h1>
-                        <p><span className="font-semibold">Tác giả:</span> {authors.join(', ')}</p>
-                        <p><span className="font-semibold">Thể loại:</span> {categories.join(', ')}</p>
-                        <div><span className="font-semibold">Mô tả truyện:</span> {description}</div>
-                        <div className="book-actions mt-30">
-                            <button className="btn-dark">
-                                <a href={`/${slugify(title)}/chuong-1`}>Đọc truyện</a>
-                            </button>
-                            {lastReadChapter && (
-                                <button className="btn-dark ml-4">
-                                    <a href={`/${slugify(title)}/${lastReadChapter}`}>Đọc tiếp</a>
-                                </button>
-                            )}
+                    {loading ? (
+                        <div className="animate-pulse">
+                            <div className="h-[310px] w-[220px] bg-grey rounded"></div>
+                            <div className="book-info flex-col flex-wrap gap-7">
+                                <div className="h-8 bg-grey rounded w-3/4"></div>
+                                <div className="h-6 bg-grey rounded w-1/2"></div>
+                                <div className="h-6 bg-grey rounded w-1/3"></div>
+                                <div className="h-24 bg-grey rounded w-full"></div>
+                                <div className="h-10 bg-grey rounded w-1/4"></div>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                    <>
+                        <img src={image} alt="Cover" className="h-[310px] w-[220px] object-cover" />
+                        <div className="book-info flex flex-col flex-wrap gap-7">
+                            <h1 className="text-3xl">{title}</h1>
+                            <p><span className="font-semibold">Tác giả:</span> {authors.join(', ')}</p>
+                            <p><span className="font-semibold">Thể loại:</span> {categories.join(', ')}</p>
+                            <div><span className="font-semibold">Mô tả truyện:</span> {description}</div>
+                            <div className="book-actions mt-30">
+                                <button className="btn-dark">
+                                    <a href={`/${slugify(title)}/chuong-1`}>Đọc truyện</a>
+                                </button>
+                                {lastReadChapter && (
+                                    <button className="btn-dark ml-4">
+                                        <a href={`/${slugify(title)}/${lastReadChapter}`}>Đọc tiếp</a>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                    )}
                 </div>
             </div>
             <div className='flex w-9/12 mx-auto mt-10'>
                 <div className='w-9/12 mx-auto mt-10'>
                     <p className="font-semibold text-4xl mb-3">Danh sách chương:</p>
                     <div className="chapter-list mt-5 columns-2 w-10/12">
-                        {chapterList.map((chapter, index) => {
+                        {loading ? (
+                            Array.from({ length: 10 }).map((_, index) => (
+                                <div key={index} className="h-6 bg-grey rounded mb-3"></div>
+                            ))
+                        ) : (
+                        chapterList.map((chapter, index) => {
                             const chapterNumber = extractChapterNumber(chapter);
                             const isRead = readChapters.includes(slugify(chapterNumber));
                             return (
@@ -76,7 +97,7 @@ const novelInfoPage = () => {
                                     <strong>{chapter}</strong>
                                 </a>
                             );
-                        })}
+                        }))}
                     </div>
                 </div>
                 <TrendingNovelSideBar />

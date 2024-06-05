@@ -5,7 +5,7 @@ import NovelCategoriesSideBar from '../components/novelCategoriesSideBar';
 import FinishedNovel from '../components/finishedNovel';
 const homePage = () => {
   return (
-    <div>
+    <div className="">
         <TrendingNovel/>
         <div className="flex w-10/12 mx-auto gap-5">
         <NovelTable/>
