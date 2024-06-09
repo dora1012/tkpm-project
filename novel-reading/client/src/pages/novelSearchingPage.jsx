@@ -3,6 +3,8 @@ import Pagination from '../components/pagination';
 import axios from 'axios'
 import { useLocation, Link } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
+import { fetchSearchResult } from '../utils/fetchAPI';
+import loadingGif from  '../imgs/loading.gif'
 
 const novelSearchingPage = () => {
     const location = useLocation();
@@ -11,19 +13,33 @@ const novelSearchingPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const novelsPerPage = 10;
     const [novelData, setNovelData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [noResults, setNoResults] = useState(false);
+    
+
     useEffect(() => {
         // Fetch novel information from backend
-        const fetchSearchResult = async () => {
+        const fetchData = async () => {
+            setNovelData([]);
+            setLoading(true);
+            setNoResults(false);
+
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/?tukhoa=${query}`);
+                const response = await fetchSearchResult(query);
                 setNovelData(response.data);
+                setLoading(false);
+
+                if (response.data.length === 0) {
+                        setNoResults(true);
+                }
             } catch (error) {
-                console.error('Error fetching search result:', error);
+                console.error(error);
+                setLoading(false);
             }
         };
 
-        fetchSearchResult();
-    }, []);
+        fetchData();
+    }, [query]);
 
 
     // Paginate the filtered novels
@@ -31,7 +47,15 @@ const novelSearchingPage = () => {
     return (
         <div className="p-4 w-9/12 mx-auto">
             <h1 className="text-2xl font-bold mb-4">Kết quả tìm kiếm cho: {query}</h1>
-            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+            {loading ? (
+                <div className="w-3/6 mx-auto">
+                    <img src={loadingGif} alt="Loading"></img>
+                </div>
+                
+            ) : noResults ? (
+                <p className="text-3xl text-coral-pink font-semibold">Không tìm thấy kết quả nào cho từ khóa "{query}".</p>
+            ) : 
+            (<div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                 {novelData.map((novel) => (
                         <Link
                             to={`/${slugify(novel.title)}`}
@@ -79,6 +103,7 @@ const novelSearchingPage = () => {
                     ))
                 }
             </div>
+            )}
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
     );

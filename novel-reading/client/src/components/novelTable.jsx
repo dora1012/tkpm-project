@@ -53,10 +53,25 @@ const novelTable = () => {
                                     
                                 ))} */}
               <td className="py-2 px-4 border-b border-r text-center">
-                {novel.categories.join(", ")}
+                {novel.categories.map((category, index) => (
+                  <span key={index}>
+                    <a
+                      href={`/${slugify(category)}`}
+                      className="hover:text-coral-pink"
+                    >
+                      {category}
+                    </a>
+                    {index < novel.categories.length - 1 && ", "}
+                  </span>
+                ))}
               </td>
               <td className="py-2 px-4 border-b border-r text-center">
-                {novel.chapter}
+              <a
+                  href={`${slugify(novel.title)}/${slugify(novel.chapter)}`}
+                  className="hover:text-coral-pink"
+                >
+                  {novel.chapter}
+                </a>
               </td>
               <td className="py-2 px-4 border-b text-center">
                 {" "}

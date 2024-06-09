@@ -4,15 +4,17 @@ const { defaultSource } = require('../config/sources');
 const { encodeKeyword } = require('../utils/encodeKeyword');
 
 const getNovelListOfSearchResult = async (req, res) => {
-  var keyword = req.query.tukhoa;
+  let keyword = req.query.tukhoa;
   keyword = encodeKeyword(keyword);
+  
   if (!keyword) {
     return res.status(400).json({ error: 'Keyword is required' });
   }
   
   try {
-    const searchUrl = `${defaultSource}/tim-kiem/?tukhoa=${keyword}`
+    const searchUrl = `${defaultSource}/tim-kiem/?tukhoa=${keyword}`;
     const searchResults = await crawlNovelList(searchUrl);
+
     res.json(searchResults);
   } catch (error) {
     console.error('Error fetching search results:', error);
@@ -23,6 +25,3 @@ const getNovelListOfSearchResult = async (req, res) => {
 module.exports = {
   getNovelListOfSearchResult
 };
-
-
-
