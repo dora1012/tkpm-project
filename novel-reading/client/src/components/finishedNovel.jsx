@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { slugify } from "../utils/slugify";
+import { fetchFinishedNovel } from "../utils/fetchAPI";
 
 const finishedNovel = () => {
   const [novelData, setNovelData] = useState([]);
 
   useEffect(() => {
     // Fetch novel list from backend
-    const fetchFinishedNovel = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get(
           import.meta.env.VITE_SERVER_DOMAIN + "/api/truyen-da-hoan-thanh"
@@ -19,7 +20,7 @@ const finishedNovel = () => {
       }
     };
 
-    fetchFinishedNovel();
+    fetchData();
   }, []);
   return (
     <div className="container w-10/12 mx-auto">

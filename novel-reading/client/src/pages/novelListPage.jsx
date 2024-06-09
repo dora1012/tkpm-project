@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../components/pagination';
-import axios from 'axios'
 import { useLocation, Link, useParams } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
+import { fetchListResult } from '../utils/fetchAPI';
+import { getReadableText } from '../utils/getReadableText';
 
 
 const novelListPage = ({type}) => {
@@ -12,24 +13,24 @@ const novelListPage = ({type}) => {
     const [novelData, setNovelData] = useState([]);
     useEffect(() => {
         // Fetch novel information from backend
-        const fetchSearchResult = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}`);
+                const response = await fetchListResult(type, subitem);
                 setNovelData(response.data);
             } catch (error) {
-                console.error('Error fetching search result:', error);
+                console.error(error);
             }
         };
 
-        fetchSearchResult();
-    }, [subitem]);
+        fetchData();
+    }, [type, subitem]);
 
 
     // Paginate the filtered novels
     const totalPages = Math.ceil(novelData.length / novelsPerPage);
     return (
         <div className="p-4 w-9/12 mx-auto">
-            <h1 className="text-2xl font-bold mb-4">{subitem}</h1>
+            <h1 className="text-2xl font-bold mb-4">{getReadableText(subitem)}</h1>
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                 {novelData.map((novel) => (
                         <Link
@@ -46,21 +47,6 @@ const novelListPage = ({type}) => {
                                 <div className="flex flex-col mt-1 ml-5 gap-4">
                                     <div className="flex">
                                         <p className="font-semibold">{novel.title}</p>
-                                        {/* {novel.tags.map((tag, index) => (
-                                            <div key={index} className="ml-3 inline-block">
-                                                <span
-                                                    className={`inline-block px-2 py-1 rounded-full mr-1 border ${
-                                                        tag === 'Full'
-                                                            ? 'border-jade text-jade'
-                                                            : tag === 'Hot'
-                                                            ? 'border-red text-red'
-                                                            : 'border-bright-blue text-bright-blue'
-                                                    }`}
-                                                >
-                                                    {tag}
-                                                </span>
-                                            </div>
-                                        ))} */}
                                     </div>
                                     <p className="text-md">{novel.authors}</p>
                                     <span>

@@ -2,21 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
 import TrendingNovelSideBar from '../components/trendingNovelSideBar';
-import axios from 'axios'
-
+import { fetchNovelInfo } from '../utils/fetchAPI';
+import loadingGif from '../imgs/loading.gif'
+import ReadMore from '../components/readMore.jsx';
 
 const novelInfoPage = () => {
     const { slug } = useParams(); 
+    
     const [novelData, setNovelData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
         // Fetch novel information from backend
-        const fetchNovelInfo = async () => {
+        const fetchData = async () => {
+            
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}`);
-                console.log(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}`);
+                const response = await fetchNovelInfo(slug);
                 setNovelData(response.data);
             } catch (error) {
                 console.error('Error fetching novel info:', error);
@@ -26,7 +27,7 @@ const novelInfoPage = () => {
             }
         };
 
-        fetchNovelInfo();
+        fetchData();
     }, [slug]);
     const { title = '', image, authors = [], categories = [], description, chapterList = [] } = novelData;
     const extractChapterNumber = (chapter) => {
@@ -47,15 +48,8 @@ const novelInfoPage = () => {
             <div className="bg-coral-pink">
                 <div className="container w-9/12 mx-auto flex gap-20 px-20 py-20 bg-white">
                     {loading ? (
-                        <div className="animate-pulse">
-                            <div className="h-[310px] w-[220px] bg-grey rounded"></div>
-                            <div className="book-info flex-col flex-wrap gap-7">
-                                <div className="h-8 bg-grey rounded w-3/4"></div>
-                                <div className="h-6 bg-grey rounded w-1/2"></div>
-                                <div className="h-6 bg-grey rounded w-1/3"></div>
-                                <div className="h-24 bg-grey rounded w-full"></div>
-                                <div className="h-10 bg-grey rounded w-1/4"></div>
-                            </div>
+                        <div className="w-3/6 mx-auto">
+                            <img src={loadingGif} alt="Loading"></img>
                         </div>
                     ) : (
                     <>
@@ -64,7 +58,7 @@ const novelInfoPage = () => {
                             <h1 className="text-3xl">{title}</h1>
                             <p><span className="font-semibold">Tác giả:</span> {authors.join(', ')}</p>
                             <p><span className="font-semibold">Thể loại:</span> {categories.join(', ')}</p>
-                            <div><span className="font-semibold">Mô tả truyện:</span> {description}</div>
+                            <div><span className="font-semibold">Mô tả truyện:</span> <ReadMore content={description} maxLength={200} /></div>
                             <div className="book-actions mt-30">
                                 <button className="btn-dark">
                                     <a href={`/${slugify(title)}/chuong-1`}>Đọc truyện</a>

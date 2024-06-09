@@ -29,3 +29,4 @@ export function slugify(text) {
 
     return updatedText;
 }
+
