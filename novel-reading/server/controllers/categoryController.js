@@ -3,11 +3,16 @@ const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlLi
 
 const { defaultSource } = require('../config/sources');
 
+const Crawler = require('../services/crawler');
+const TruyenFull = require('../services/crawlerTruyenFull');
+
+const crawler = new Crawler(new TruyenFull());
 
 // used for Navigation Bar 
 const getCategoryList = async (req, res) => {
   try {
-    const categoryList = await crawlCategoryList(defaultSource);
+    //const categoryList = await crawlCategoryList(defaultSource);
+    const categoryList = await crawler.crawl(defaultSource, 'category');
     res.json(categoryList);  
   } catch (error) {
     console.error(error);

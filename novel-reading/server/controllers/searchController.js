@@ -6,6 +6,7 @@ const getNovelListOfSearchResult = async (req, res) => {
   var keyword = req.query.tukhoa;
   var page= req.query.page;
   keyword = encodeKeyword(keyword);
+  
   if (!keyword) {
     return res.status(400).json({ error: 'Keyword is required' });
   }
@@ -19,6 +20,7 @@ const getNovelListOfSearchResult = async (req, res) => {
       searchUrl = `${defaultSource}/tim-kiem/?tukhoa=${keyword}&page=${page}`;
     }
     const searchResults = await crawlNovelList(searchUrl);
+
     res.json(searchResults);
   } catch (error) {
     console.error('Error fetching search results:', error);
@@ -44,6 +46,3 @@ module.exports = {
   getNovelListOfSearchResult,
   getMaxPaginationNumber
 };
-
-
-

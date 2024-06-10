@@ -31,3 +31,53 @@ export const createEbook = async (
     throw error;
   }
 };
+
+
+export const fetchNovelInfo = async (
+  slug
+) => {
+  try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}`);
+      return response;
+  } catch (error) {
+      console.error('Error fetching novel info:', error);
+      throw error;
+  }
+};
+
+export const fetchListResult = async (
+  type, 
+  subitem
+) => {
+  try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}`);
+      return response;
+  } catch (error) {
+      console.error('Error fetching list result:', error);
+      throw error;
+  }
+};
+
+export const fetchSearchResult = async (
+  query
+) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/?tukhoa=${query}`);
+      return response;
+  } catch (error) {
+      console.error('Error fetching search result:', error);
+      throw error;
+  }
+};
+
+export const fetchFinishedNovel = async () => {
+  try {
+    const response = await axios.get(
+      import.meta.env.VITE_SERVER_DOMAIN + "/api/truyen-da-hoan-thanh"
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error fetching finished novel:", error);
+  }
+};

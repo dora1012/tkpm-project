@@ -1,11 +1,17 @@
-const { crawlMainList } = require('../services/crawlHomePage');
 const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
+// const { crawlNovelList } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
+
+const Crawler = require('../services/crawler');
+const TruyenFull = require('../services/crawlerTruyenFull');
+
+const crawler = new Crawler(new TruyenFull());
 
 // used for Navigation Bar 
 const getMainList = async (req, res) => {
   try {
-    const mainList = await crawlMainList(defaultSource);
+    //const mainList = await crawlMainList(defaultSource);
+    const mainList = await crawler.crawl(defaultSource, 'main');
     res.json(mainList);
   } catch (error) {
     console.error(error);
@@ -27,7 +33,7 @@ const getNovelListOfMainList = async (req, res) => {
     else{
       listUrl = `${defaultSource}/danh-sach/${listSlug}/${paginationSlug}/`;
     }
-    const novels = await crawlNovelList(listUrl);
+    const novels = await crawler.crawl(listUrl, 'list');
     res.json(novels);
   } catch (error) {  
     console.error(error);

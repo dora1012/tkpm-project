@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import ExportSettingsPanel from "../components/exportSettingsPanel";
 import { useLocation } from "react-router-dom";
+import { getBookmark, setBookmark, clearBookmark } from "../utils/bookmarkUtils";
 
 const novelReadingPage = () => {
   const extractChapterNumber = (chapterString) => {
@@ -28,8 +29,13 @@ const novelReadingPage = () => {
     // Fetch novel list from backend
     const fetchNovelContent = async () => {
       try {
-        const response = await axios.get(import.meta.env.VITE_SERVER_DOMAIN + '/api/' + slug + '/' + chapterNumber);
-        console.log(import.meta.env.VITE_SERVER_DOMAIN + '/api/' + slug + '/' + chapterNumber);
+        const response = await axios.get(
+          import.meta.env.VITE_SERVER_DOMAIN +
+            "/api/" +
+            slug +
+            "/" +
+            chapterNumber
+        );
         const data = response.data;
         setNovelData(data);
 
@@ -41,23 +47,34 @@ const novelReadingPage = () => {
         }
 
         // Mark the last read chapter in local storage
-        localStorage.setItem(slug + '-last-read', chapterNumber);
-
+        localStorage.setItem(slug + "-last-read", chapterNumber);
       } catch (error) {
-        console.error('Error fetching chapter content:', error);
+        console.error("Error fetching chapter content:", error);
       }
     };
 
-
     fetchNovelContent();
+
+    const savedBookmark = getBookmark(slug);
+    if (savedBookmark !== null) {
+      setBookmarkedLine(savedBookmark);
+    }
   }, [slug, chapterNumber]); // Add dependencies to the useEffect hook
 
   // Get settings from local storage
 
-  const [background, setBackground] = useState(localStorage.getItem('background') || 'white');
-  const [fontSize, setFontSize] = useState(localStorage.getItem('fontSize') || 'base');
-  const [fontStyle, setFontStyle] = useState(localStorage.getItem('fontStyle') || 'sans-serif');
-  const [lineSpacing, setLineSpacing] = useState(parseFloat(localStorage.getItem('lineSpacing')) || 1.5);
+  const [background, setBackground] = useState(
+    localStorage.getItem("background") || "white"
+  );
+  const [fontSize, setFontSize] = useState(
+    localStorage.getItem("fontSize") || "base"
+  );
+  const [fontStyle, setFontStyle] = useState(
+    localStorage.getItem("fontStyle") || "sans-serif"
+  );
+  const [lineSpacing, setLineSpacing] = useState(
+    parseFloat(localStorage.getItem("lineSpacing")) || 1.5
+  );
 
   const isDarkBackground = (color) => {
     const darkColors = ["black"];
@@ -85,9 +102,47 @@ const novelReadingPage = () => {
   //     navigate(`/${slug}/chuong-${currentChapter + 1}`);
   //   }
   // };
-  const replacePTags = (htmlString) => {
-    return htmlString.replace(/<p>/g, '').replace(/<\/p>/g, '');
+  const [bookmarkedLine, setBookmarkedLine] = useState(null);
+
+  const handleBookmarkClick = (index) => {
+    if (bookmarkedLine === index.toString()) {
+      clearBookmark(slug);
+      setBookmarkedLine(null);
+    } else {
+      setBookmark(slug, index.toString());
+      setBookmarkedLine(index.toString());
+    }
   };
+
+  const replaceTags = (html) => {
+    return html.replace(/<p>/g, ' ').replace(/<\/p>/g, '').replace(/<div[^>]*>/g, ' ').replace(/<\/div>/g, '');
+  };
+
+  const renderContentWithBookmarks = () => {
+    if (!novelData.chapterContent) return null;
+
+    const content = replaceTags(novelData.chapterContent)
+    // Split content by <br> tags and map each line
+    const lines = content.split('<br>');
+
+    return lines.map((line, index) => (
+      <div key={index} className="relative group flex items-start" id={`line-${index}`}>
+        {bookmarkedLine === index.toString() && (
+          <div className="absolute left-0 top-0 cursor-pointer">
+            ⭐
+          </div>
+        )}
+        <span
+          className={`bookmarkable text-${fontSize} ${bookmarkedLine === index.toString()}`}
+          style={{ lineHeight: lineSpacing, marginLeft: bookmarkedLine === index.toString() ? '1.5em' : '0' }}
+          onClick={() => handleBookmarkClick(index.toString())}
+        >
+          {line}
+        </span>
+        <br />
+      </div>
+    ));
+  }
   return (
     <div
       className={`container mx-auto p-8 w-full shadow ${textColor}`}
@@ -127,11 +182,8 @@ const novelReadingPage = () => {
       </div> */}
       <div className="prose max-w-none w-9/12 mx-auto">
         <div style={{ lineHeight: `${lineSpacing}` }}>
-          {novelData.chapterContent && (
-            <div  className={`text-${fontSize}`}  dangerouslySetInnerHTML={{ __html: replacePTags(novelData.chapterContent) }} ></div>
-          )} 
+          {renderContentWithBookmarks()}
         </div>
-
       </div>
       {/* <div className="w-4/6 flex justify-between items-center mx-auto mb-4 mt-8">
         <button

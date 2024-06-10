@@ -1,17 +1,15 @@
-const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
+const { crawlNovelList } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
+const Crawler = require('../services/crawler');
+const TruyenFull = require('../services/crawlerTruyenFull');
+
+const crawler = new Crawler(new TruyenFull());
 
 // used for Novel List of A Author
 const getNovelListOfAuthor = async (req, res) => {
   try {
-    const { authorSlug , paginationSlug} = req.params;
-    let authorUrl;
-    if (paginationSlug === null || paginationSlug === undefined) {
-      authorUrl = `${defaultSource}/tac-gia/${authorSlug}/`;
-    }
-    else{
-      authorUrl = `${defaultSource}/tac-gia/${authorSlug}/${paginationSlug}/`;
-    }
+    const { authorSlug } = req.params;
+    const authorUrl = `${defaultSource}/tac-gia/${authorSlug}/`
     const novels = await crawlNovelList(authorUrl);
     res.json(novels);  
   } catch (error) {  
