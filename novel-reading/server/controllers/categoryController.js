@@ -1,4 +1,4 @@
-const { crawlCategoryList } = require('../services/crawlHomePage');
+//const { crawlCategoryList } = require('../services/crawlHomePage');
 const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
 
 const { defaultSource } = require('../config/sources');
@@ -32,8 +32,7 @@ const getNovelListOfCategory = async (req, res) => {
     else{
       categoryUrl = `${defaultSource}/the-loai/${categorySlug}/${paginationSlug}/`;
     }
-    const novels = await crawlNovelList(categoryUrl);
-    res.json(novels);  
+    const novels = await crawler.crawl(categoryUrl, 'list');    res.json(novels);  
   } catch (error) {  
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - NOVEL CATEGORY LIST CONTROLLER' });
