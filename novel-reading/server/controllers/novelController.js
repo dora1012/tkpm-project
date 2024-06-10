@@ -2,6 +2,8 @@ const { crawlNovelInfo, crawlAllChapters,crawlChapterPagination } = require('../
 // const { crawlTruyenHot, crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh } = require('../services/crawlHomePage');
 // const { crawlNovelInfo } = require('../services/crawlNovelInforPage')
 const { defaultSource } = require('../config/sources');
+const { crawlMaxPaginationNumber } = require('../services/crawlListPage');
+const {processChapterTitles} = require('../utils/processChapter');
 
 const Crawler = require('../services/crawler');
 const TruyenFull = require('../services/crawlerTruyenFull');
@@ -37,6 +39,8 @@ const getNovelInfor = async (req, res) => {
     const url = `${defaultSource}/${novelSlug}/`
     //const novelInfor = await crawlNovelInfo(url);
     const novelInfor = await crawler.crawl(url, 'info');
+    novelInfor.maxPagination =  await crawlMaxPaginationNumber(url);
+
     res.json(novelInfor);  
   } catch (error) {  
     console.error(error);
@@ -49,7 +53,8 @@ const getAllChapters = async (req, res) => {
   try {
     const { novelSlug } = req.params;
     const url = `${defaultSource}/${novelSlug}/`
-    const chapterList = await crawlAllChapters(url);
+    let chapterList = await crawlAllChapters(url);
+    chapterList = processChapterTitles(chapterList);
     res.json(chapterList);  
   } catch (error) {  
     console.error(error);

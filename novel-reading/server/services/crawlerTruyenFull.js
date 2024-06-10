@@ -153,7 +153,6 @@ class TruyenFull extends Strategy {
         $('#list-chapter ul.list-chapter li a').each((index, element) => {
             result.chapterList.push($(element).text().trim());
         });
-
         return result;
     }
 }

@@ -1,6 +1,9 @@
 const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
 const { encodeKeyword } = require('../utils/encodeKeyword');
+const Crawler = require('../services/crawler');
+const TruyenFull = require('../services/crawlerTruyenFull');
+const crawler = new Crawler(new TruyenFull());
 
 const getNovelListOfSearchResult = async (req, res) => {
   var keyword = req.query.tukhoa;
@@ -19,7 +22,7 @@ const getNovelListOfSearchResult = async (req, res) => {
     else{
       searchUrl = `${defaultSource}/tim-kiem/?tukhoa=${keyword}&page=${page}`;
     }
-    const searchResults = await crawlNovelList(searchUrl);
+    const searchResults = await crawler.crawl(searchUrl, 'list');
 
     res.json(searchResults);
   } catch (error) {
