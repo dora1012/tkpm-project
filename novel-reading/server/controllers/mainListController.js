@@ -1,5 +1,5 @@
 const { crawlMainList } = require('../services/crawlHomePage');
-const { crawlNovelList } = require('../services/crawlListPage');
+const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
 
 // used for Navigation Bar 
@@ -16,11 +16,17 @@ const getMainList = async (req, res) => {
 // used for Novel List of Each Type in MainList
 const getNovelListOfMainList = async (req, res) => {
   try {
-    var { listSlug } = req.params;
+    var { listSlug, paginationSlug } = req.params;
     if(listSlug === 'truyen-moi-cap-nhat') {
       listSlug = 'truyen-moi';
     }
-    const listUrl = `${defaultSource}/danh-sach/${listSlug}/`;
+    let listUrl;
+    if (paginationSlug === null || paginationSlug === undefined) {
+      listUrl = `${defaultSource}/danh-sach/${listSlug}/`;
+    }
+    else{
+      listUrl = `${defaultSource}/danh-sach/${listSlug}/${paginationSlug}/`;
+    }
     const novels = await crawlNovelList(listUrl);
     res.json(novels);
   } catch (error) {  
@@ -29,7 +35,23 @@ const getNovelListOfMainList = async (req, res) => {
   }
 };
 
+const getMaxPaginationNumber = async(req,res)=>{
+  try{
+    const { listSlug } = req.params;
+    if(listSlug === 'truyen-moi-cap-nhat') {
+      listSlug = 'truyen-moi';
+    }
+    let listUrl = `${defaultSource}/danh-sach/${listSlug}/`;
+    const num = await crawlMaxPaginationNumber(listUrl);
+    res.json(num); 
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error - MAX PAGE NUM OF MAIN LIST CONTROLLER' });
+  }
+}
+
 module.exports = {
   getMainList,
-  getNovelListOfMainList
+  getNovelListOfMainList,
+  getMaxPaginationNumber
 };

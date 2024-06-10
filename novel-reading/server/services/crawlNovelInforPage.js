@@ -1,15 +1,16 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const fetchPage = require('../utils/fetchPage');
+const { getMaxPaginationNumber } = require('../utils/pagination');
+
+
+
 
 const crawlNovelInfo = async (novelUrl) => {
   try {
-    const response = await axios.get(novelUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
-    });
+    const htmlData= await fetchPage(novelUrl);
 
-    const $ = cheerio.load(response.data);
+    const $ = cheerio.load(htmlData);
     const novelInfor = {};
 
     // Extracting title
@@ -50,6 +51,9 @@ const crawlNovelInfo = async (novelUrl) => {
     $('#list-chapter ul.list-chapter li a').each((index, element) => {
         novelInfor.chapterList.push($(element).text().trim());
     });
+    
+    // get max pagination number
+    novelInfor.maxPagination = await getMaxPaginationNumber(novelUrl);
 
     return novelInfor;
   } catch (error) {
@@ -58,39 +62,83 @@ const crawlNovelInfo = async (novelUrl) => {
   }
 };
 
-// const crawlChapterList = async (novelUrl) => {
-//     try {
-//       const response = await axios.get(novelUrl, {
-//         headers: {
-//           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-//         }
-//       });
+
+
+const crawlChapterPagination = async (novelUrl) => {
+  try {
+    const htmlData= await fetchPage(novelUrl);
+
+    const $ = cheerio.load(htmlData);
+    const novelInfor = {};
+    // Extracting chapter list
+    novelInfor.chapterList = [];
   
-//       const $ = cheerio.load(response.data);
-//       const chapterList = [];
-  
-//       $('#list-chapter ul.list-chapter li a').each((index, element) => {
-//         chapterList.push($(element).text().trim());
-//       });
-  
-//       return chapterList;
-//     } catch (error) {
-//       console.error(`Error fetching chapter list: ${error}`);
-//       throw new Error('Failed to fetch chapter list');
-//     }
-//   };
-  
+    $('#list-chapter ul.list-chapter li a').each((index, element) => {
+        novelInfor.chapterList.push($(element).text().trim());
+    });
+
+    return novelInfor;
+  } catch (error) {
+    console.error(`Error fetching novel info: ${error}`);
+    throw new Error('Failed to fetch novel information');
+  }
+};
+
+
+
+
+
+
+const crawlAllChapters = async (novelUrl) => {
+  try {
+    let chapterList = [];
+    let currentPage = 1;
+    let hasNextPage= true;
+
+    while (hasNextPage  ) {
+      var url = `${novelUrl}trang-${currentPage}/#list-chapter`;
+      console.log(`Fetching chapter list from ${url}`);
+      
+      // Watch and change how to get response
+      let htmlData = await fetchPage(url);
+      let $ = cheerio.load(htmlData);
+
+      $('#list-chapter ul.list-chapter li a').each((index, element) => {
+        chapterList.push($(element).text().trim());
+      });
+      
+
+
+      // Kiểm tra xem có trang tiếp theo không
+      const nextPageLink = $('a span.glyphicon-menu-right').closest('a').attr('href');
+      hasNextPage = nextPageLink ? true : false;
+      // Tăng số trang hiện tại
+      currentPage++;
+    }
+
+    return chapterList;
+    
+  } catch (error) {
+    console.error(`Error fetching chapter list: ${error}`);
+    throw new Error('Failed to fetch chapter list');
+  }
+};
+
+
+
   
   
 module.exports = {
   crawlNovelInfo,
-  //crawlChapterList
+  crawlChapterPagination,
+  crawlAllChapters,
+
 };
 
 
 // TEST
 // (async () => {
-//     const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/';
+//     const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/trang-4/#list-chapter';
 //     try {
 //         const infor = await crawlNovelInfo(source);
 //         console.log(infor);
