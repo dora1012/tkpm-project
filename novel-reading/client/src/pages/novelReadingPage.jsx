@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-// import { novelData } from '../utils/fetchFromAPI';
 import { useNavigate } from "react-router-dom";
 import { slugify } from "../utils/slugify";
 import SettingPanel from "../components/settingPanel";
@@ -10,29 +9,51 @@ import ExportSettingsPanel from "../components/exportSettingsPanel";
 import { useLocation } from "react-router-dom";
 import { getBookmark, setBookmark, clearBookmark } from "../utils/bookmarkUtils";
 import ChapterNavigation from "../components/chapterNavigation";
+import ServerPanel from "../components/serverPanel";
 
 const novelReadingPage = () => {
   const extractChapterNumber = (chapterString) => {
     const match = chapterString.match(/\d+$/);
     return match ? parseInt(match[0], 10) : null;
   };
+
+  const extractLastChapterNumber = (chapter) => {
+    const match = chapter.match(/Chương (\d+):/i);
+    return match ? match[1] : null;
+};
   const [novelData, setNovelData] = useState([]);
+  const [maxPageNumber, setMaxPageNumber] = useState();
+  const [chapterData, setChapterData] = useState([]);
   const { slug, chapterNumber } = useParams();
   const navigate = useNavigate();
   const currentChapter = parseInt(extractChapterNumber(chapterNumber), 10);
+  const prevMaxPageNumberRef = useRef();
 
 
   useEffect(() => {
-    // Fetch novel list from backend
+    const fetchMaxPageNumber = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/max-trang`);
+        setMaxPageNumber(response.data);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching max page number:', error);
+        return null;
+      }
+    };
+
+    const fetchChapterList = async (maxPage) => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/trang-${maxPage}`);
+        setChapterData(response.data || []);
+      } catch (error) {
+        console.error('Error fetching chapter list:', error);
+      }
+    };
+
     const fetchNovelContent = async () => {
       try {
-        const response = await axios.get(
-          import.meta.env.VITE_SERVER_DOMAIN +
-            "/api/" +
-            slug +
-            "/" +
-            chapterNumber
-        );
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/${chapterNumber}`);
         const data = response.data;
         setNovelData(data);
 
@@ -50,13 +71,22 @@ const novelReadingPage = () => {
       }
     };
 
-    fetchNovelContent();
+    const fetchData = async () => {
+      const maxPage = await fetchMaxPageNumber();
+      if (maxPage !== null && maxPage !== prevMaxPageNumberRef.current) {
+        prevMaxPageNumberRef.current = maxPage;
+        await fetchChapterList(maxPage);
+      }
+      await fetchNovelContent();
 
-    const savedBookmark = getBookmark(slug);
-    if (savedBookmark !== null) {
-      setBookmarkedLine(savedBookmark);
-    }
-  }, [slug, chapterNumber]); // Add dependencies to the useEffect hook
+      const savedBookmark = getBookmark(slug);
+      if (savedBookmark !== null) {
+        setBookmarkedLine(savedBookmark);
+      }
+    };
+
+    fetchData();
+  }, [slug, chapterNumber, maxPageNumber]);
 
   // Get settings from local storage
 
@@ -88,17 +118,6 @@ const novelReadingPage = () => {
     return <div>Chapter not found</div>;
   }
 
-  const handlePreviousChapter = () => {
-    if (currentChapter > 0) {
-      navigate(`/${slug}/chuong-${currentChapter - 1}`);
-    }
-  };
-
-  // const handleNextChapter = () => {
-  //   if (currentChapter < novel.chapterList.length - 1) {
-  //     navigate(`/${slug}/chuong-${currentChapter + 1}`);
-  //   }
-  // };
   const [bookmarkedLine, setBookmarkedLine] = useState(null);
 
   const handleBookmarkClick = (index) => {
@@ -140,6 +159,9 @@ const novelReadingPage = () => {
       </div>
     ));
   }
+  const {chapterList = []} = chapterData;
+  const lastChapter = chapterList.length > 0 ? chapterList[chapterList.length - 1] : null;
+  console.log(lastChapter);
   const totalChapters = 100;
   return (
     <div
@@ -151,66 +173,14 @@ const novelReadingPage = () => {
         <p className="text-smoke">{novelData.chapterTitle}</p>
       </div>
       <div className="w-9/12 border border-grey mx-auto mt-5"></div>
-      {/* <div className="w-1/2 flex justify-between items-center mx-auto mb-4 mt-8">
-        <button
-          className="bg-coral-pink text-white py-2 px-4 rounded"
-          onClick={handlePreviousChapter}
-          disabled={currentChapter <= 1}
-        >
-          Chương trước
-        </button>
-        <select
-          className="bg-coral-pink text-white py-2 px-4 rounded"
-          value={currentChapter}
-          onChange={(e) => navigate(`/${slug}/chuong-${e.target.value}`)}
-        >
-          {novel.chapterList.map(chapter => (
-            <option key={chapter.chapterNumber} value={chapter.chapterNumber}>
-              Chương {chapter.chapterNumber}
-            </option>
-          ))}
-        </select>
-        <button
-          className="bg-coral-pink text-white py-2 px-4 rounded"
-          onClick={handleNextChapter}
-          disabled={currentChapter >= novel.chapterList.length}
-        >
-          Chương sau
-        </button>
-      </div> */}
+      
       <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters}/>
       <div className="prose max-w-none w-9/12 mx-auto">
         <div style={{ lineHeight: `${lineSpacing}` }}>
           {renderContentWithBookmarks()}
         </div>
       </div>
-      {/* <div className="w-4/6 flex justify-between items-center mx-auto mb-4 mt-8">
-        <button
-          className="bg-coral-pink text-white py-2 px-4 rounded"
-          onClick={handlePreviousChapter}
-          disabled={currentChapter <= 1}
-        >
-          Chương trước
-        </button>
-        <select
-          className="bg-coral-pink text-white py-2 px-4 rounded"
-          value={currentChapter}
-          onChange={(e) => navigate(`/${slug}/chuong-${e.target.value}`)}
-        >
-          {novel.chapterList.map(chapter => (
-            <option key={chapter.chapterNumber} value={chapter.chapterNumber}>
-              Chương {chapter.chapterNumber}
-            </option>
-          ))}
-        </select>
-        <button
-          className="bg-coral-pink text-white py-2 px-4 rounded"
-          onClick={handleNextChapter}
-          disabled={currentChapter >= novel.chapterList.length}
-        >
-          Chương sau
-        </button>
-      </div> */}
+      <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters}/>
       <SettingPanel
         onChangeBackground={setBackground}
         onChangeFontStyle={setFontStyle}
@@ -227,6 +197,7 @@ const novelReadingPage = () => {
         chapterTitle={novelData.chapterTitle || ""}
         author={""}
       />
+      <ServerPanel/>
     </div>
   );
 };
