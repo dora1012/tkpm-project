@@ -1,9 +1,9 @@
-const { crawlNovelInfo, crawlAllChapters,crawlChapterPagination } = require('../services/crawlNovelInforPage')
+//const { crawlNovelInfo, crawlAllChapters, crawlChapterPagination } = require('../services/crawlNovelInforPage')
 // const { crawlTruyenHot, crawlTruyenMoiCapNhat, crawlTruyenDaHoanThanh } = require('../services/crawlHomePage');
 // const { crawlNovelInfo } = require('../services/crawlNovelInforPage')
+// const { crawlMaxPaginationNumber } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
-const { crawlMaxPaginationNumber } = require('../services/crawlListPage');
-const {processChapterTitles} = require('../utils/processChapter');
+const { processChapterTitles } = require('../utils/processChapter');
 
 const Crawler = require('../services/crawler');
 const TruyenFull = require('../services/crawlerTruyenFull');
@@ -28,35 +28,37 @@ const getTruyenHot = getTruyen('hot', 'Internal Server Error - TRUYEN HOT CONTRO
 const getTruyenMoiCapNhat = getTruyen('new', 'Internal Server Error - TRUYEN MOI CAP NHAT CONTROLLER');
 const getTruyenDaHoanThanh = getTruyen('finished', 'Internal Server Error - TRUYEN DA HOAN THANH CONTROLLER');
 
-
-
-
-
 // used for Novel Infor Page
 const getNovelInfor = async (req, res) => {
   try {
-    const { novelSlug } = req.params;
-    const url = `${defaultSource}/${novelSlug}/`
+    const { novelSlug, paginationSlug } = req.params;
+    let novelUrl;
+    if (paginationSlug === null || paginationSlug === undefined) {
+      novelUrl = `${defaultSource}/${novelSlug}/`;
+    }
+    else {
+      novelUrl = `${defaultSource}/${novelSlug}/trang-${paginationSlug}`;
+    }
     //const novelInfor = await crawlNovelInfo(url);
-    const novelInfor = await crawler.crawl(url, 'info');
-    novelInfor.maxPagination =  await crawlMaxPaginationNumber(url);
-
-    res.json(novelInfor);  
-  } catch (error) {  
+    let novelInfor = await crawler.crawl(novelUrl, 'info');
+    //novelInfor.maxPagination = await crawler.crawlWithAsyncHandles(url, 'max-pagination');
+    res.json(novelInfor);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - NOVEL INFOR CONTROLLER' });
   }
 };
+
 
 // get chapter list of novel
 const getAllChapters = async (req, res) => {
   try {
     const { novelSlug } = req.params;
     const url = `${defaultSource}/${novelSlug}/`
-    let chapterList = await crawlAllChapters(url);
+    let chapterList = await crawler.crawlWithAsyncHandles(url, 'all-chapters');
     chapterList = processChapterTitles(chapterList);
-    res.json(chapterList);  
-  } catch (error) {  
+    res.json(chapterList);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - NOVEL CONTROLLER - CHAPTER LIST' });
   }
@@ -67,13 +69,28 @@ const getChapterListForEachPagination = async (req, res) => {
   try {
     const { novelSlug, paginationSlug } = req.params;
     const url = `${defaultSource}/${novelSlug}/trang-${paginationSlug}/#list-chapter`
-    const chapterList = await crawlChapterPagination(url);
-    res.json(chapterList);  
-  } catch (error) {  
+    //const chapterList = await crawlChapterPagination(url);
+    const chapterList = await crawler.crawl(url, 'chapter-pagination');
+    res.json(chapterList);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - CHAPTER LIST FOR EACH PAGINATION IN CONTROLLER' });
   }
 };
+
+const getMaxPaginationNumber = async (req, res) => {
+  try {
+    const { novelSlug } = req.params;
+    let novelUrl = `${defaultSource}/${novelSlug}/`;
+    //const num = await crawlMaxPaginationNumber(novelUrl);
+    const num = await crawler.crawlWithAsyncHandles(novelUrl, 'max-pagination');
+    res.json(num);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error - MAX PAGE NUM OF NOVEL CONTROLLER' });
+  }
+
+}
 
 module.exports = {
   getTruyenHot,
@@ -81,7 +98,8 @@ module.exports = {
   getTruyenDaHoanThanh,
   getNovelInfor,
   getAllChapters,
-  getChapterListForEachPagination
+  getChapterListForEachPagination,
+  getMaxPaginationNumber
 };
 
 // TEST

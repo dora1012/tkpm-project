@@ -1,5 +1,5 @@
 //const { crawlCategoryList } = require('../services/crawlHomePage');
-const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
+//const { crawlNovelList,crawlMaxPaginationNumber } = require('../services/crawlListPage');
 
 const { defaultSource } = require('../config/sources');
 
@@ -13,7 +13,7 @@ const getCategoryList = async (req, res) => {
   try {
     //const categoryList = await crawlCategoryList(defaultSource);
     const categoryList = await crawler.crawl(defaultSource, 'category');
-    res.json(categoryList);  
+    res.json(categoryList);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - CATEGORY LIST CONTROLLER' });
@@ -29,26 +29,27 @@ const getNovelListOfCategory = async (req, res) => {
     if (paginationSlug === null || paginationSlug === undefined) {
       categoryUrl = `${defaultSource}/the-loai/${categorySlug}/`;
     }
-    else{
+    else {
       categoryUrl = `${defaultSource}/the-loai/${categorySlug}/${paginationSlug}/`;
     }
     let novels = await crawler.crawl(categoryUrl, 'list');
     novels.splice(5, 1);
-    res.json(novels);  
-  } catch (error) {  
+    res.json(novels);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - NOVEL CATEGORY LIST CONTROLLER' });
   }
 };
 
 
-const getMaxPaginationNumber = async(req,res)=>{
-  try{
+const getMaxPaginationNumber = async (req, res) => {
+  try {
     const { categorySlug } = req.params;
     let categoryUrl = `${defaultSource}/the-loai/${categorySlug}/`;
-    const num = await crawlMaxPaginationNumber(categoryUrl);
-    res.json(num); 
-  }catch(error){
+    // const num = await crawlMaxPaginationNumber(categoryUrl);
+    const num = await crawler.crawlWithAsyncHandles(categoryUrl, 'max-pagination');
+    res.json(num);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - MAX PAGE NUM OF AUTHOR CONTROLLER' });
   }

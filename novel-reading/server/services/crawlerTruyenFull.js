@@ -1,7 +1,13 @@
 const Strategy = require('./crawlerStrategy');
+const pagination = require('../utils/pagination');
+const puppeteer = require('puppeteer');
+const fetchPage = require('../utils/fetchPage');
+const cheerio = require('cheerio');
 
 class TruyenFull extends Strategy {
-    extractData($, type) {
+    async extractData(url, type) {
+        const data = await fetchPage(url);
+        const $ = cheerio.load(data);
         switch (type) {
             case 'hot':
                 return this.extractHot($);
@@ -21,6 +27,8 @@ class TruyenFull extends Strategy {
                 return this.extractChapter($);
             case 'info':
                 return this.extractInfo($);
+            case 'chapter-pagination':
+                return this.extractChapterPagination($);
             default:
                 throw new Error('Invalid type');
         }
@@ -154,7 +162,81 @@ class TruyenFull extends Strategy {
             result.chapterList.push($(element).text().trim());
         });
         return result;
+    };
+
+    extractChapterPagination($) {
+        const result = {};
+        result.chapterList = [];
+
+        $('#list-chapter ul.list-chapter li a').each((index, element) => {
+            result.chapterList.push($(element).text().trim());
+        });
+
+        return result;
     }
+
+    async extractDataWithAysncHandles(url, type) {
+        switch (type) {
+            case 'max-pagination':
+                return await pagination.getMaxPaginationNumber(url);
+            case 'chapter-ppt':
+                return await this.extractChapterPPT(url);
+            case 'all-chapters':
+                return await this.extractAllChapters(url);
+            default:
+                throw new Error('Invalid type');
+        }
+    }
+
+    async extractChapterPPT(url) {
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+        const page = await browser.newPage();
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+
+        await page.click('.chapter_jump');
+        await page.waitForSelector('.chapter_jump option', { timeout: 10000 });
+
+        const detailTruyen = await page.evaluate(() => {
+            let chapterList = Array.from(document.querySelectorAll('.chapter_jump option'))
+                .map(option => option.innerText.match(/\d+/)[0]);
+            let halfLength = Math.floor(chapterList.length / 2);
+            chapterList = chapterList.slice(halfLength)
+
+            return {
+                chapterList
+            };
+        });
+
+        await browser.close();
+        return detailTruyen;
+    }
+
+    async extractAllChapters(url) {
+        let chapterList = [];
+        let currentPage = 1;
+        let hasNextPage = true;
+
+        while (hasNextPage) {
+            var url = `${novelUrl}trang-${currentPage}/#list-chapter`;
+            console.log(`Fetching chapter list from ${url}`);
+
+            let htmlData = await fetchPage(url);
+            let $ = cheerio.load(htmlData);
+
+            $('#list-chapter ul.list-chapter li a').each((index, element) => {
+                chapterList.push($(element).text().trim());
+            });
+
+            const nextPageLink = $('a span.glyphicon-menu-right').closest('a').attr('href');
+            hasNextPage = nextPageLink ? true : false;
+            currentPage++;
+        }
+        return chapterList;
+    }
+
 }
 
 module.exports = TruyenFull;
