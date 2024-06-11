@@ -28,6 +28,7 @@ const novelSearchingPage = () => {
 
             try {
                 const response = await fetchSearchResult(query, currentPage);
+                console.log("Something")
                 setNovelData(response.data);
                 setLoading(false);
 
@@ -42,6 +43,7 @@ const novelSearchingPage = () => {
         const fetchMaxPageNumber = async()=>{
             try{
                 const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/max-trang/?tukhoa=${query}`)
+                console.log("Something")
                 setMaxPageNumber(response.data);
             }
             catch(error){

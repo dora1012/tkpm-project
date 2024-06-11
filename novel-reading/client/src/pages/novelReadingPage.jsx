@@ -9,6 +9,7 @@ import axios from "axios";
 import ExportSettingsPanel from "../components/exportSettingsPanel";
 import { useLocation } from "react-router-dom";
 import { getBookmark, setBookmark, clearBookmark } from "../utils/bookmarkUtils";
+import ChapterNavigation from "../components/chapterNavigation";
 
 const novelReadingPage = () => {
   const extractChapterNumber = (chapterString) => {
@@ -18,12 +19,8 @@ const novelReadingPage = () => {
   const [novelData, setNovelData] = useState([]);
   const { slug, chapterNumber } = useParams();
   const navigate = useNavigate();
-  // const novel = novelData.find(n => slugify(n.novelTitle) === slug);
   const currentChapter = parseInt(extractChapterNumber(chapterNumber), 10);
 
-  // const location = useLocation();
-  // const authors = location.state?.authors || "Unknown Author";
-  // console.log(authors);
 
   useEffect(() => {
     // Fetch novel list from backend
@@ -143,6 +140,7 @@ const novelReadingPage = () => {
       </div>
     ));
   }
+  const totalChapters = 100;
   return (
     <div
       className={`container mx-auto p-8 w-full shadow ${textColor}`}
@@ -180,6 +178,7 @@ const novelReadingPage = () => {
           Chương sau
         </button>
       </div> */}
+      <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters}/>
       <div className="prose max-w-none w-9/12 mx-auto">
         <div style={{ lineHeight: `${lineSpacing}` }}>
           {renderContentWithBookmarks()}

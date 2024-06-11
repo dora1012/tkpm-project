@@ -4,6 +4,7 @@ import { useLocation, Link, useParams, useSearchParams } from 'react-router-dom'
 import { slugify } from '../utils/slugify';
 import { fetchListResult } from '../utils/fetchAPI';
 import { getReadableText } from '../utils/getReadableText';
+import axios from 'axios';
 
 
 const novelListPage = ({type}) => {
@@ -30,6 +31,7 @@ const novelListPage = ({type}) => {
         const fetchMaxPageNumber = async()=>{
             try{
                 const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}/max-trang`);
+                console.log(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}/max-trang`)
                 setMaxPageNumber(response.data);
             }
             catch(error){
