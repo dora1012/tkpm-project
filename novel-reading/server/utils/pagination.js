@@ -1,7 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fetchPage = require('./fetchPage');
-const {crawlMaxPaginationByNext} = require('../services/crawlListPage');
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -26,6 +25,33 @@ const fetchAndParse = async (url, parser) => {
   return parser(html);
 };
 
+
+const getMaxPaginationByNext = async (novelUrl) => {
+  try {
+    let currentPage = 1;
+    let hasNextPage= true;
+
+    while (hasNextPage  ) {
+      var url = `${novelUrl}trang-${currentPage}/`;
+      console.log(`Fetching from ${url}`);
+      // get html data
+      let htmlData = await fetchPage(url);
+      let $ = cheerio.load(htmlData);
+      // Kiểm tra xem có trang tiếp theo không
+      const nextPageLink = $('a span.glyphicon-menu-right').closest('a').attr('href');
+      hasNextPage = nextPageLink ? true : false;
+      // Tăng số trang hiện tại
+      currentPage++;
+    }
+
+    return currentPage-1;
+    
+  } catch (error) {
+    console.error(`Error fetching max pagination number by next: ${error}`);
+    throw new Error('Failed to fetch max pagination number by next');
+  }
+};
+
 const getMaxPaginationNumber = async (url) => {
   try {
     const lastPageLink = await fetchAndParse(url, getLastPageLink);
@@ -34,9 +60,9 @@ const getMaxPaginationNumber = async (url) => {
       await delay(1000);
       lastPageNumber = await fetchAndParse(lastPageLink, getCurrentPageNumber);
     } else {
-      lastPageNumber=crawlMaxPaginationByNext(url);
+      lastPageNumber= await getMaxPaginationByNext(url);
     }
-    console.log('Số trang cuối cùng là:', lastPageNumber);
+    console.log('Max Page:', lastPageNumber);
     return lastPageNumber;
   } catch (error) {
     console.error(`Error fetching List Max: ${error.message}`);
