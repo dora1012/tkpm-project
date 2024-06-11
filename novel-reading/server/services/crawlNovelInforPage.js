@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fetchPage = require('../utils/fetchPage');
-const { getMaxPaginationNumber } = require('../utils/pagination');
+//const { getMaxPaginationNumber } = require('../utils/pagination');
 
 
 
@@ -53,7 +53,7 @@ const crawlNovelInfo = async (novelUrl) => {
     });
     
     // get max pagination number
-    novelInfor.maxPagination = await getMaxPaginationNumber(novelUrl);
+    //novelInfor.maxPagination = await getMaxPaginationNumber(novelUrl);
 
     return novelInfor;
   } catch (error) {
@@ -163,9 +163,9 @@ module.exports = {
 
 // TEST
 // (async () => {
-//     const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/trang-4/#list-chapter';
+//     const source = 'https://truyenfull.vn/ngu-hoan/';
 //     try {
-//         const infor = await crawlNovelInfo(source);
+//         const infor = await crawlMaxPaginationByNext(source);
 //         console.log(infor);
 //     } catch (error) {
 //         console.error('Error fetching novel content:', error);
