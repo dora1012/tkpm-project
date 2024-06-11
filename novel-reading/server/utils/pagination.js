@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fetchPage = require('./fetchPage');
+const {crawlMaxPaginationByNextPage} = require('../services/crawlListPage');
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -22,14 +23,14 @@ const getMaxPaginationNumber = async (url) => {
     const firstPageHtml = await fetchPage(url);
     if (firstPageHtml) {
       const lastPageLink = getLastPageLink(firstPageHtml);
-      let lastPageNumber;
+      let lastPageNumber=1;
       if (lastPageLink) {
         await delay(1000); // Adding a delay of 1 second
         const lastPageHtml = await fetchPage(lastPageLink);
         lastPageNumber = getCurrentPageNumber(lastPageHtml);
       }
       else{
-        lastPageNumber=1;
+        lastPageNumber=crawlMaxPaginationByNext(url);
       }
       console.log('Số trang cuối cùng là:', lastPageNumber);
       return lastPageNumber;

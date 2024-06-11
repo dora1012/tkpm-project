@@ -124,7 +124,31 @@ const crawlAllChapters = async (novelUrl) => {
   }
 };
 
+const crawlMaxPaginationByNext = async (novelUrl) => {
+  try {
+    let currentPage = 1;
+    let hasNextPage= true;
 
+    while (hasNextPage  ) {
+      var url = `${novelUrl}trang-${currentPage}/`;
+      console.log(`Fetching from ${url}`);
+      // get html data
+      let htmlData = await fetchPage(url);
+      let $ = cheerio.load(htmlData);
+      // Kiểm tra xem có trang tiếp theo không
+      const nextPageLink = $('a span.glyphicon-menu-right').closest('a').attr('href');
+      hasNextPage = nextPageLink ? true : false;
+      // Tăng số trang hiện tại
+      currentPage++;
+    }
+
+    return currentPage-1;
+    
+  } catch (error) {
+    console.error(`Error fetching max pagination number: ${error}`);
+    throw new Error('Failed to fetch max pagination number');
+  }
+};
 
   
   
@@ -132,6 +156,7 @@ module.exports = {
   crawlNovelInfo,
   crawlChapterPagination,
   crawlAllChapters,
+  crawlMaxPaginationByNext
 
 };
 
