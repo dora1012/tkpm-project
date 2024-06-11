@@ -14,7 +14,7 @@ const readMore = ({ content, maxLength }) => {
       <p>{isExpanded ? content : shortContent}</p>
       {content.length > maxLength && (
         <button onClick={toggleReadMore} className="text-coral-pink mt-2">
-          {isExpanded ? 'Read Less' : 'Read More'}
+          {isExpanded ? 'Rút gọn' : 'Đọc thêm'}
         </button>
       )}
     </div>
