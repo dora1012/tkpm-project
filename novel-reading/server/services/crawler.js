@@ -13,6 +13,10 @@ class Crawler {
         return await this.strategy.crawl(url, type);
     }
 
+    async crawlWithAsyncHandles(url, type) {
+        return await this.strategy.crawlWithAsyncHandles(url, type);
+    }
+
 }
 
 module.exports = Crawler;
