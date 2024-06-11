@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../components/pagination';
 import axios from 'axios'
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useSearchParams, Link } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
 import { fetchSearchResult } from '../utils/fetchAPI';
 import loadingGif from  '../imgs/loading.gif'
 
 const novelSearchingPage = () => {
     const location = useLocation();
-    const query = new URLSearchParams(location.search).get('query') || '';
+    const [searchParams, setSearchParams] = useSearchParams();
+    const query = searchParams.get('query') || '';
+    const page = parseInt(searchParams.get('page') || '1', 10);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const novelsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(page);
     const [novelData, setNovelData] = useState([]);
+    const [maxPageNumber, setMaxPageNumber] = useState();
     const [loading, setLoading] = useState(true);
     const [noResults, setNoResults] = useState(false);
     
@@ -25,7 +27,8 @@ const novelSearchingPage = () => {
             setNoResults(false);
 
             try {
-                const response = await fetchSearchResult(query);
+                const response = await fetchSearchResult(query, currentPage);
+
                 setNovelData(response.data);
                 setLoading(false);
 
@@ -37,13 +40,31 @@ const novelSearchingPage = () => {
                 setLoading(false);
             }
         };
+        const fetchMaxPageNumber = async()=>{
+            try{
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/max-trang/?tukhoa=${query}`)
+                setMaxPageNumber(response.data);
+            }
+            catch(error){
+                console.error("Failed to fetch max page number: ",error);
+            }
+        }
 
         fetchData();
-    }, [query]);
+        fetchMaxPageNumber();
+    }, [query, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(page);
+      }, [page]);
+    
+      const handlePageChange = (page) => {
+        setSearchParams({ query, page });
+        setCurrentPage(page);
+      };
 
 
-    // Paginate the filtered novels
-    const totalPages = Math.ceil(novelData.length / novelsPerPage);
+    const totalPages = maxPageNumber;
     return (
         <div className="p-4 w-9/12 mx-auto">
             <h1 className="text-2xl font-bold mb-4">Kết quả tìm kiếm cho: {query}</h1>
@@ -71,21 +92,6 @@ const novelSearchingPage = () => {
                                 <div className="flex flex-col mt-1 ml-5 gap-4">
                                     <div className="flex">
                                         <p className="font-semibold">{novel.title}</p>
-                                        {/* {novel.tags.map((tag, index) => (
-                                            <div key={index} className="ml-3 inline-block">
-                                                <span
-                                                    className={`inline-block px-2 py-1 rounded-full mr-1 border ${
-                                                        tag === 'Full'
-                                                            ? 'border-jade text-jade'
-                                                            : tag === 'Hot'
-                                                            ? 'border-red text-red'
-                                                            : 'border-bright-blue text-bright-blue'
-                                                    }`}
-                                                >
-                                                    {tag}
-                                                </span>
-                                            </div>
-                                        ))} */}
                                     </div>
                                     <p className="text-md">{novel.authors}</p>
                                     <span>
@@ -104,7 +110,13 @@ const novelSearchingPage = () => {
                 }
             </div>
             )}
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            <Pagination
+        currentPage={currentPage}
+        totalPages={maxPageNumber}
+        onPageChange={handlePageChange}
+        baseURL={location.pathname}
+        query={query}
+      />
         </div>
     );
 };

@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
 import TrendingNovelSideBar from '../components/trendingNovelSideBar';
 import { fetchNovelInfo } from '../utils/fetchAPI';
 import loadingGif from '../imgs/loading.gif'
 import ReadMore from '../components/readMore.jsx';
+import parse from 'html-react-parser';
+import Pagination from '../components/pagination.jsx';
 
 const novelInfoPage = () => {
     const { slug } = useParams(); 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = parseInt(searchParams.get('page') || '1', 10);
     
     const [novelData, setNovelData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingChapters, setLoadingChapters] = useState(true);
+    const [chapterData, setChapterData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        // Fetch novel information from backend
+    useEffect(()=>{
         const fetchData = async () => {
-            
             try {
-                const response = await fetchNovelInfo(slug);
+                const response = await fetchNovelInfo(slug, currentPage);
                 setNovelData(response.data);
             } catch (error) {
                 console.error('Error fetching novel info:', error);
@@ -27,21 +32,49 @@ const novelInfoPage = () => {
             }
         };
 
+
         fetchData();
-    }, [slug]);
-    const { title = '', image, authors = [], categories = [], description, chapterList = [] } = novelData;
+    }, [slug])
+
+      // Fetch chapter list based on the current page
+  useEffect(() => {
+    const fetchChapterList = async () => {
+        const fetchChapterList = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/trang-${currentPage}`);
+                setChapterData(response.data || []);
+            } catch (error) {
+                console.error('Error fetching novel info:', error);
+            }
+            finally {
+                setLoadingChapters(false);
+            }
+        };
+        fetchChapterList();
+    };
+
+    fetchChapterList();
+  }, [slug, currentPage]); // Added currentPage as dependency
+
+    const { title = '', image, authors = [], categories = [], description = '', maxPagination } = novelData;
+    const {chapterList = []} = chapterData;
     const extractChapterNumber = (chapter) => {
         const match = chapter.match(/Chương \d+/i);
         return match ? match[0] : chapter;
     };
-
+    useEffect(() => {
+        setCurrentPage(page);
+      }, [page]);
+    
+      const handlePageChange = (page) => {
+        setSearchParams({ page });
+        setCurrentPage(page);
+      };
     // Get the read chapters from local storage
     const readChapters = JSON.parse(localStorage.getItem(slug)) || [];
 
     // Get the last read chapter from local storage
     const lastReadChapter = localStorage.getItem(slug + '-last-read');
-
-    console.log(lastReadChapter);
 
     return (
         <div>
@@ -75,10 +108,10 @@ const novelInfoPage = () => {
                 </div>
             </div>
             <div className='flex w-9/12 mx-auto mt-10'>
-                <div className='w-9/12 mx-auto mt-10'>
+                <div className='w-9/12 mx-auto mt-10' id='list-chapter'>
                     <p className="font-semibold text-4xl mb-3">Danh sách chương:</p>
                     <div className="chapter-list mt-5 columns-2 w-10/12">
-                        {loading ? (
+                        {loadingChapters ? (
                             Array.from({ length: 10 }).map((_, index) => (
                                 <div key={index} className="h-6 bg-grey rounded mb-3"></div>
                             ))
@@ -93,6 +126,12 @@ const novelInfoPage = () => {
                             );
                         }))}
                     </div>
+                    <Pagination
+                    currentPage={currentPage}
+                    totalPages={maxPagination}
+                    onPageChange={handlePageChange}
+                    baseURL={location.pathname}
+                    />
                 </div>
                 <TrendingNovelSideBar />
             </div>

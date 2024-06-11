@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
+import parse from 'html-react-parser';
 
-const readMore = ({ content, maxLength }) => {
+const readMore = ({ content = '', maxLength }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const shortContent = content.length > maxLength ? content.slice(0, maxLength) + '...' : content;
+  const getPlainText = (htmlContent) => {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = htmlContent;
+    return tempElement.textContent || tempElement.innerText || '';
+  };
+
+  const plainTextContent = getPlainText(content);
+  const shortContent = plainTextContent.length > maxLength ? plainTextContent.slice(0, maxLength) + '...' : plainTextContent;
 
   return (
     <div>
-      <p>{isExpanded ? content : shortContent}</p>
-      {content.length > maxLength && (
+      <div>{isExpanded ? parse(content) : shortContent}</div>
+      {plainTextContent.length > maxLength && (
         <button onClick={toggleReadMore} className="text-coral-pink mt-2">
           {isExpanded ? 'Rút gọn' : 'Đọc thêm'}
         </button>
