@@ -61,7 +61,7 @@ const ExportSettingsPanel = ({
   };
 
   return (
-    <div className="fixed top-1/4 right-20 transform -translate-y-1/2 z-50">
+    <div className="">
       <button
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}

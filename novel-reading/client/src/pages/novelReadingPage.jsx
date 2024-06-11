@@ -24,36 +24,32 @@ const novelReadingPage = () => {
   const [novelData, setNovelData] = useState([]);
   const [maxPageNumber, setMaxPageNumber] = useState();
   const [chapterData, setChapterData] = useState([]);
+  const [serverOrder, setServerOrder] = useState(["truyenfull", "thichtruyen"]);
   const { slug, chapterNumber } = useParams();
+  const [server, setServer] = useState("defaultSource");
   const navigate = useNavigate();
   const currentChapter = parseInt(extractChapterNumber(chapterNumber), 10);
   const prevMaxPageNumberRef = useRef();
 
+  const handleServerOrderChange = (newOrder) => {
+    setServerOrder(newOrder);
+    localStorage.setItem("serverOrder", JSON.stringify(newOrder));
+    console.log("New server order:", newOrder);
+  };
+
+
 
   useEffect(() => {
-    const fetchMaxPageNumber = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/max-trang`);
-        setMaxPageNumber(response.data);
-        return response.data;
-      } catch (error) {
-        console.error('Error fetching max page number:', error);
-        return null;
-      }
-    };
-
-    const fetchChapterList = async (maxPage) => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/trang-${maxPage}`);
-        setChapterData(response.data || []);
-      } catch (error) {
-        console.error('Error fetching chapter list:', error);
-      }
-    };
-
+    // Fetch novel list from backend
     const fetchNovelContent = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/${chapterNumber}`);
+        const response = await axios.get(
+          import.meta.env.VITE_SERVER_DOMAIN +
+            "/api/" +
+            slug +
+            "/" +
+            chapterNumber
+        );
         const data = response.data;
         setNovelData(data);
 
@@ -70,23 +66,25 @@ const novelReadingPage = () => {
         console.error("Error fetching chapter content:", error);
       }
     };
-
-    const fetchData = async () => {
-      const maxPage = await fetchMaxPageNumber();
-      if (maxPage !== null && maxPage !== prevMaxPageNumberRef.current) {
-        prevMaxPageNumberRef.current = maxPage;
-        await fetchChapterList(maxPage);
+    const fetchSourceServer = async() =>{
+      try {
+          const selectedServer = serverOrder[0];
+          const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
+          console.log(response.data);
+          setServer(selectedServer);
+          return;
+      } catch (error) {
+          console.error('Error fetching source:', error);
       }
-      await fetchNovelContent();
-
-      const savedBookmark = getBookmark(slug);
-      if (savedBookmark !== null) {
-        setBookmarkedLine(savedBookmark);
-      }
-    };
-
-    fetchData();
-  }, [slug, chapterNumber, maxPageNumber]);
+  }
+    fetchSourceServer();
+    fetchNovelContent();
+    
+    const savedBookmark = getBookmark(slug);
+    if (savedBookmark !== null) {
+      setBookmarkedLine(savedBookmark);
+    }
+  }, [slug, chapterNumber, maxPageNumber, serverOrder]); 
 
   // Get settings from local storage
 
@@ -159,9 +157,6 @@ const novelReadingPage = () => {
       </div>
     ));
   }
-  const {chapterList = []} = chapterData;
-  const lastChapter = chapterList.length > 0 ? chapterList[chapterList.length - 1] : null;
-  console.log(lastChapter);
   const totalChapters = 100;
   return (
     <div
@@ -181,23 +176,27 @@ const novelReadingPage = () => {
         </div>
       </div>
       <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters}/>
-      <SettingPanel
-        onChangeBackground={setBackground}
-        onChangeFontStyle={setFontStyle}
-        onChangeFontSize={setFontSize}
-        onChangeLineSpacing={setLineSpacing}
-        currentBackground={background}
-        currentFontStyle={fontStyle}
-        currentFontSize={fontSize}
-        currentLineSpacing={lineSpacing}
-      />
-      <ExportSettingsPanel
-        chapterContent={novelData.chapterContent || ""}
-        novelTitle={novelData.novelTitle || ""}
-        chapterTitle={novelData.chapterTitle || ""}
-        author={""}
-      />
-      <ServerPanel/>
+      <div className="flex flex-col fixed top-1/3 right-20 transform -translate-y-1/2 z-50 gap-10">
+        <ExportSettingsPanel
+            chapterContent={novelData.chapterContent || ""}
+            novelTitle={novelData.novelTitle || ""}
+            chapterTitle={novelData.chapterTitle || ""}
+            author={""}
+          />
+        <SettingPanel
+          onChangeBackground={setBackground}
+          onChangeFontStyle={setFontStyle}
+          onChangeFontSize={setFontSize}
+          onChangeLineSpacing={setLineSpacing}
+          currentBackground={background}
+          currentFontStyle={fontStyle}
+          currentFontSize={fontSize}
+          currentLineSpacing={lineSpacing}
+        />
+        
+        <ServerPanel currentServer={server} onServerOrderChange={handleServerOrderChange}/>
+      </div>
+      
     </div>
   );
 };
