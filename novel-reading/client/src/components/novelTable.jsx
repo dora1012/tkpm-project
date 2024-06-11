@@ -56,7 +56,7 @@ const novelTable = () => {
                 {novel.categories.map((category, index) => (
                   <span key={index}>
                     <a
-                      href={`/${slugify(category)}`}
+                      href={`/the-loai/${slugify(category)}`}
                       className="hover:text-coral-pink"
                     >
                       {category}
