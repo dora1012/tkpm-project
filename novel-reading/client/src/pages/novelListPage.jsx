@@ -31,7 +31,6 @@ const novelListPage = ({type}) => {
         const fetchMaxPageNumber = async()=>{
             try{
                 const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}/max-trang`);
-                console.log(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}/max-trang`)
                 setMaxPageNumber(response.data);
             }
             catch(error){
@@ -42,6 +41,8 @@ const novelListPage = ({type}) => {
         fetchData();
         fetchMaxPageNumber();
     }, [type, subitem, currentPage]);
+
+    
 
     useEffect(() => {
         setCurrentPage(page);

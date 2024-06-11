@@ -8,7 +8,7 @@ router.get('/truyen-moi-cap-nhat', novelController.getTruyenMoiCapNhat);
 router.get('/truyen-da-hoan-thanh', novelController.getTruyenDaHoanThanh);
 router.get('/:novelSlug/danh-sach-chuong', novelController.getAllChapters);
 router.get('/:novelSlug/max-trang', novelController.getMaxPaginationNumber);
-router.get('/:novelSlug/trang-:paginationSlug',novelController.getChapterListForEachPagination);
+router.get('/:novelSlug/trang-:paginationSlug',novelController.getNovelInfor);
 router.get('/:novelSlug/chuong-:chapterSlug', chapterController.getChapter);
 router.get('/:novelSlug', novelController.getNovelInfor);
 
