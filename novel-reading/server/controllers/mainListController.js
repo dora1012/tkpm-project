@@ -43,7 +43,7 @@ const getNovelListOfMainList = async (req, res) => {
 
 const getMaxPaginationNumber = async(req,res)=>{
   try{
-    const { listSlug } = req.params;
+    let { listSlug } = req.params;
     if(listSlug === 'truyen-moi-cap-nhat') {
       listSlug = 'truyen-moi';
     }
