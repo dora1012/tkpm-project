@@ -5,6 +5,8 @@ import TrendingNovelSideBar from '../components/trendingNovelSideBar';
 import { fetchNovelInfo } from '../utils/fetchAPI';
 import loadingGif from '../imgs/loading.gif'
 import ReadMore from '../components/readMore.jsx';
+import parse from 'html-react-parser';
+import Pagination from '../components/pagination.jsx';
 
 const novelInfoPage = () => {
     const { slug } = useParams(); 
@@ -29,7 +31,7 @@ const novelInfoPage = () => {
 
         fetchData();
     }, [slug]);
-    const { title = '', image, authors = [], categories = [], description, chapterList = [] } = novelData;
+    const { title = '', image, authors = [], categories = [], description = '', chapterList = [] } = novelData;
     const extractChapterNumber = (chapter) => {
         const match = chapter.match(/Chương \d+/i);
         return match ? match[0] : chapter;
@@ -42,6 +44,7 @@ const novelInfoPage = () => {
     const lastReadChapter = localStorage.getItem(slug + '-last-read');
 
     console.log(lastReadChapter);
+    const parsedDescription = parse(description || '');
 
     return (
         <div>
@@ -93,6 +96,12 @@ const novelInfoPage = () => {
                             );
                         }))}
                     </div>
+                    <Pagination
+                    currentPage={currentPage}
+                    totalPages={maxPageNumber}
+                    onPageChange={handlePageChange}
+                    baseURL={location.pathname}
+                    query={query}/>
                 </div>
                 <TrendingNovelSideBar />
             </div>
