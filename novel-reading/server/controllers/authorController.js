@@ -13,29 +13,30 @@ const getNovelListOfAuthor = async (req, res) => {
     if (paginationSlug === null || paginationSlug === undefined) {
       authorUrl = `${defaultSource}/tac-gia/${authorSlug}/`;
     }
-    else{
+    else {
       authorUrl = `${defaultSource}/tac-gia/${authorSlug}/${paginationSlug}/`;
     }
     const novels = await crawler.crawl(authorUrl, 'list');
-    res.json(novels);  
-  } catch (error) {  
+    res.json(novels);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - NOVEL LIST OF AUTHOR CONTROLLER' });
   }
 };
 
-const getMaxPaginationNumber = async(req,res)=>{
-  try{
+const getMaxPaginationNumber = async (req, res) => {
+  try {
     const { authorSlug } = req.params;
     let authorUrl = `${defaultSource}/tac-gia/${authorSlug}/`;
-    const num = await crawlMaxPaginationNumber(authorUrl);
-    res.json(num); 
-  }catch(error){
+    // const num = await crawlMaxPaginationNumber(authorUrl);
+    const num = await crawler.crawlWithAsyncHandles(authorUrl, 'max-pagination');
+    res.json(num);
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - MAX PAGE NUM OF AUTHOR CONTROLLER' });
   }
 }
 module.exports = {
-    getNovelListOfAuthor,
-    getMaxPaginationNumber
+  getNovelListOfAuthor,
+  getMaxPaginationNumber
 };

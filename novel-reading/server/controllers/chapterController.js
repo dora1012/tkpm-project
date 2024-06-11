@@ -1,4 +1,4 @@
-const { CrawChapterPPT } = require('../services/crawlChapterByPuppeteer');
+//const { CrawChapterPPT } = require('../services/crawlChapterByPuppeteer');
 // const { crawlChapter } = require('../services/crawlChapterPage')
 const { defaultSource } = require('../config/sources');
 
@@ -25,7 +25,8 @@ const getChapterList = async (req, res) => {
   try {
     const { novelSlug, chapterSlug } = req.params;
     const url = `${defaultSource}/${novelSlug}/${chapterSlug}/`
-    const chapterList = await CrawChapterPPT(url);
+    // const chapterList = await CrawChapterPPT(url);
+    const chapterList = await crawler.crawlWithAsyncHandles(url, 'chapter-ppt');
     res.json(chapterList);  
   } catch (error) {  
     console.error(error);
