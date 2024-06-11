@@ -35,11 +35,15 @@ const getTruyenDaHoanThanh = getTruyen('finished', 'Internal Server Error - TRUY
 // used for Novel Infor Page
 const getNovelInfor = async (req, res) => {
   try {
-    const { novelSlug } = req.params;
-    const url = `${defaultSource}/${novelSlug}/`
-    //const novelInfor = await crawlNovelInfo(url);
-    const novelInfor = await crawler.crawl(url, 'info');
-    novelInfor.maxPagination =  await crawlMaxPaginationNumber(url);
+    const { novelSlug,paginationSlug } = req.params;
+    let novelUrl;
+    if (paginationSlug === null || paginationSlug === undefined) {
+      novelUrl = `${defaultSource}/${novelSlug}/`;
+    }
+    else{
+      novelUrl = `${defaultSource}/${novelSlug}/trang-${paginationSlug}`;
+    }
+    let novelInfor = await crawler.crawl(novelUrl, 'info');
 
     res.json(novelInfor);  
   } catch (error) {  
@@ -47,6 +51,21 @@ const getNovelInfor = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error - NOVEL INFOR CONTROLLER' });
   }
 };
+
+
+// get chapter list for each pagination page
+const getChapterListForEachPagination = async (req, res) => {
+  try {
+    const { novelSlug, paginationSlug } = req.params;
+    const url = `${defaultSource}/${novelSlug}/trang-${paginationSlug}/#list-chapter`
+    let chapterList = await crawlChapterPagination(url);
+    res.json(chapterList);  
+  } catch (error) {  
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error - CHAPTER LIST FOR EACH PAGINATION IN CONTROLLER' });
+  }
+};
+
 
 // get chapter list of novel
 const getAllChapters = async (req, res) => {
@@ -62,18 +81,18 @@ const getAllChapters = async (req, res) => {
   }
 };
 
-// get chapter list for each pagination page
-const getChapterListForEachPagination = async (req, res) => {
-  try {
-    const { novelSlug, paginationSlug } = req.params;
-    const url = `${defaultSource}/${novelSlug}/trang-${paginationSlug}/#list-chapter`
-    const chapterList = await crawlChapterPagination(url);
-    res.json(chapterList);  
-  } catch (error) {  
+const getMaxPaginationNumber = async(req,res)=>{
+  try{
+    const { novelSlug } = req.params;
+    let novelUrl = `${defaultSource}/${novelSlug}/`;
+    const num = await crawlMaxPaginationNumber(novelUrl);
+    res.json(num); 
+  }catch(error){
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error - CHAPTER LIST FOR EACH PAGINATION IN CONTROLLER' });
+    res.status(500).json({ error: 'Internal Server Error - MAX PAGE NUM OF NOVEL CONTROLLER' });
   }
-};
+
+}
 
 module.exports = {
   getTruyenHot,
@@ -81,7 +100,8 @@ module.exports = {
   getTruyenDaHoanThanh,
   getNovelInfor,
   getAllChapters,
-  getChapterListForEachPagination
+  getChapterListForEachPagination,
+  getMaxPaginationNumber
 };
 
 // TEST
