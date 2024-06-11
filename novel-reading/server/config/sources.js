@@ -4,7 +4,7 @@ module.exports = {
         
     },
     thichtruyen:{
-        url:'https://thichtruyen.vn/'
+        url:'https://truyen.tangthuvien.vn'
     },
     defaultSource: 'https://truyenfull.vn'
 }
