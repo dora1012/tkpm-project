@@ -162,12 +162,12 @@ module.exports = {
 
 
 // TEST
-// (async () => {
-//     const source = 'https://truyenfull.vn/bia-do-dan-phan-cong/trang-4/#list-chapter';
-//     try {
-//         const infor = await crawlNovelInfo(source);
-//         console.log(infor);
-//     } catch (error) {
-//         console.error('Error fetching novel content:', error);
-//     }
-// })();
+(async () => {
+    const source = 'https://truyenfull.vn/ngu-hoan/';
+    try {
+        const infor = await crawlMaxPaginationByNext(source);
+        console.log(infor);
+    } catch (error) {
+        console.error('Error fetching novel content:', error);
+    }
+})();

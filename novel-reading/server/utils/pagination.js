@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fetchPage = require('./fetchPage');
-const {crawlMaxPaginationByNextPage} = require('../services/crawlListPage');
+const {crawlMaxPaginationByNext} = require('../services/crawlListPage');
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -29,7 +29,7 @@ const fetchAndParse = async (url, parser) => {
 const getMaxPaginationNumber = async (url) => {
   try {
     const lastPageLink = await fetchAndParse(url, getLastPageLink);
-    let lastPageNumber;
+    let lastPageNumber=1;
     if (lastPageLink) {
       await delay(1000);
       lastPageNumber = await fetchAndParse(lastPageLink, getCurrentPageNumber);
