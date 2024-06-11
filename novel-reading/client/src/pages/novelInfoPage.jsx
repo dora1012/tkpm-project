@@ -40,8 +40,6 @@ const novelInfoPage = () => {
                 console.error('Error fetching novel info:', error);
             }
         }
-        
-        const fetchChapterList = async () => {
             const fetchChapterList = async () => {
                 try {
                     const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/trang-${currentPage}`);
@@ -53,8 +51,6 @@ const novelInfoPage = () => {
                     setLoadingChapters(false);
                 }
             };
-            fetchChapterList();
-        };
 
         fetchData();
         fetchMaxPageNumber();
@@ -82,6 +78,7 @@ const novelInfoPage = () => {
 
     // Get the last read chapter from local storage
     const lastReadChapter = localStorage.getItem(slug + '-last-read');
+
     return (
         <div>
             <div className="bg-coral-pink">
