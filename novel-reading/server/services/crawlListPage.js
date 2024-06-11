@@ -1,15 +1,14 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const fetchPage = require('../utils/fetchPage');
+const { getMaxPaginationNumber} = require('../utils/pagination');
+
 
 const crawlNovelList = async (url) => {
   try {
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
-    });
+    const html= await fetchPage(url);
 
-    const $ = cheerio.load(response.data);
+    const $ = cheerio.load(html);
     const novelList = [];
 
     $('.list .row[itemscope]').each((index, element) => {
@@ -30,8 +29,22 @@ const crawlNovelList = async (url) => {
   }
 };
 
+const crawlMaxPaginationNumber = async (url) => {
+try{
+    const maxNumber = await getMaxPaginationNumber(url);
+    return maxNumber;
+}
+catch (error) {
+    console.error(`Error fetching max pagination num: ${error}`);
+    throw new Error('Failed to fetch max pagination num');
+  }
+}
+
+
+
 module.exports = {
   crawlNovelList,
+  crawlMaxPaginationNumber
 };
 
 // TEST
@@ -41,7 +54,7 @@ module.exports = {
 //     const novelList = await crawlNovelList(source);
 //     console.log(novelList);
 //   } catch (error) {
-//     console.error('Error fetching novel list:', error);
+//     console.error('Error fetching novel list:', error.message);
 //   }
 // })();
 

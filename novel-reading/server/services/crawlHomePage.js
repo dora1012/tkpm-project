@@ -1,8 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-
-
 const crawlTruyenHot = async (url) => {
   try {
     const response = await axios.get(url, {

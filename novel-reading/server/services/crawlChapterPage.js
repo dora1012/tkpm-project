@@ -12,13 +12,8 @@ const crawlChapter = async (chapterurl) => {
     const $ = cheerio.load(response.data);
     const chapter = {};
 
-    // Extracting novel title
     chapter.novelTitle = $('a.truyen-title').text().trim();
-
-    // Extracting chapter title
     chapter.chapterTitle = $('a.chapter-title').text().trim();
-
-    // Extracting chapter content
     chapter.chapterContent = $('#chapter-c').html().trim();
 
     // // Extracting chapter list from dropdown button
@@ -35,7 +30,6 @@ const crawlChapter = async (chapterurl) => {
             const chapterLink = $(el).attr('value'); // Assuming the value attribute contains the link
             chapter.chapterList.push({ chapterNumber, chapterLink });
         });
-
     return chapter;
   } catch (error) {
     console.error(`Error fetching novel content: ${error}`);

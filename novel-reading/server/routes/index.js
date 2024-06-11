@@ -5,12 +5,14 @@ const searchRoutes = require('./searchRoutes');
 const chapterClassificationRoutes = require('./chapterClassificationRoutes');
 const novelRoutes = require('./novelRoutes');
 const ebookRoutes = require('./ebookRoutes')
+const sourcesRoutes = require('./sourcesRoutes');
 
 function route(app) {
+    app.use('/api/nguon', sourcesRoutes);
     app.use('/api', ebookRoutes);
     app.use('/api/danh-sach', mainListRoutes);
     app.use('/api/the-loai', categoryRoutes);
-    //app.use('/api', chapterRoutes); // considering
+    app.use('/api', chapterRoutes); // considering
     app.use('/api/tim-kiem', searchRoutes);
     app.use('/api/phan-loai', chapterClassificationRoutes);
     app.use('/api', novelRoutes);
