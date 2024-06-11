@@ -5,8 +5,8 @@ import TrendingNovelSideBar from '../components/trendingNovelSideBar';
 import { fetchNovelInfo } from '../utils/fetchAPI';
 import loadingGif from '../imgs/loading.gif'
 import ReadMore from '../components/readMore.jsx';
-import parse from 'html-react-parser';
 import Pagination from '../components/pagination.jsx';
+import axios from 'axios';
 
 const novelInfoPage = () => {
     const { slug } = useParams(); 
@@ -16,6 +16,7 @@ const novelInfoPage = () => {
     const [novelData, setNovelData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingChapters, setLoadingChapters] = useState(true);
+    const [maxPageNumber, setMaxPageNumber] = useState();
     const [chapterData, setChapterData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -31,32 +32,38 @@ const novelInfoPage = () => {
                 setLoading(false);
             }
         };
-
-
-        fetchData();
-    }, [slug])
-
-      // Fetch chapter list based on the current page
-  useEffect(() => {
-    const fetchChapterList = async () => {
-        const fetchChapterList = async () => {
+        const fetchMaxPageNumber = async() =>{
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/trang-${currentPage}`);
-                setChapterData(response.data || []);
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/max-trang`);
+                setMaxPageNumber(response.data);
             } catch (error) {
                 console.error('Error fetching novel info:', error);
             }
-            finally {
-                setLoadingChapters(false);
-            }
+        }
+        
+        const fetchChapterList = async () => {
+            const fetchChapterList = async () => {
+                try {
+                    const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/trang-${currentPage}`);
+                    setChapterData(response.data || []);
+                } catch (error) {
+                    console.error('Error fetching novel info:', error);
+                }
+                finally {
+                    setLoadingChapters(false);
+                }
+            };
+            fetchChapterList();
         };
+
+        fetchData();
+        fetchMaxPageNumber();
         fetchChapterList();
-    };
+    }, [slug, currentPage])
 
-    fetchChapterList();
-  }, [slug, currentPage]); // Added currentPage as dependency
+      //Fetch chapter list based on the current page
 
-    const { title = '', image, authors = [], categories = [], description = '', maxPagination } = novelData;
+    const { title = '', image, authors = [], categories = [], description = '' ,maxPagination } = novelData;
     const {chapterList = []} = chapterData;
     const extractChapterNumber = (chapter) => {
         const match = chapter.match(/Chương \d+/i);
@@ -75,7 +82,6 @@ const novelInfoPage = () => {
 
     // Get the last read chapter from local storage
     const lastReadChapter = localStorage.getItem(slug + '-last-read');
-
     return (
         <div>
             <div className="bg-coral-pink">
@@ -111,7 +117,7 @@ const novelInfoPage = () => {
                 <div className='w-9/12 mx-auto mt-10' id='list-chapter'>
                     <p className="font-semibold text-4xl mb-3">Danh sách chương:</p>
                     <div className="chapter-list mt-5 columns-2 w-10/12">
-                        {loadingChapters ? (
+                        {loading ? (
                             Array.from({ length: 10 }).map((_, index) => (
                                 <div key={index} className="h-6 bg-grey rounded mb-3"></div>
                             ))
@@ -128,7 +134,7 @@ const novelInfoPage = () => {
                     </div>
                     <Pagination
                     currentPage={currentPage}
-                    totalPages={maxPagination}
+                    totalPages={maxPageNumber}
                     onPageChange={handlePageChange}
                     baseURL={location.pathname}
                     />
