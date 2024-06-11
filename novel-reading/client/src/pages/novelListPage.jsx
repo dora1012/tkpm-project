@@ -1,33 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import Pagination from '../components/pagination';
-import { useLocation, Link, useParams } from 'react-router-dom';
+import { useLocation, Link, useParams, useSearchParams } from 'react-router-dom';
 import { slugify } from '../utils/slugify';
 import { fetchListResult } from '../utils/fetchAPI';
 import { getReadableText } from '../utils/getReadableText';
+import axios from 'axios';
 
 
 const novelListPage = ({type}) => {
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = parseInt(searchParams.get('page') || '1', 10);
+
     const { subitem } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
-    const novelsPerPage = 10;
     const [novelData, setNovelData] = useState([]);
+    const [maxPageNumber, setMaxPageNumber] = useState();
+    
     useEffect(() => {
         // Fetch novel information from backend
         const fetchData = async () => {
             try {
-                const response = await fetchListResult(type, subitem);
+                const response = await fetchListResult(type, subitem, currentPage);
                 setNovelData(response.data);
             } catch (error) {
                 console.error(error);
             }
         };
 
+        const fetchMaxPageNumber = async()=>{
+            try{
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}/max-trang`);
+                setMaxPageNumber(response.data);
+            }
+            catch(error){
+                console.error("Failed to fetch max page number: ",error);
+            }
+        }
+
         fetchData();
-    }, [type, subitem]);
+        fetchMaxPageNumber();
+    }, [type, subitem, currentPage]);
 
+    
 
-    // Paginate the filtered novels
-    const totalPages = Math.ceil(novelData.length / novelsPerPage);
+    useEffect(() => {
+        setCurrentPage(page);
+      }, [page]);
+    
+      const handlePageChange = (page) => {
+        setSearchParams({ page });
+        setCurrentPage(page);
+      };
+
     return (
         <div className="p-4 w-9/12 mx-auto">
             <h1 className="text-2xl font-bold mb-4">{getReadableText(subitem)}</h1>
@@ -64,7 +89,12 @@ const novelListPage = ({type}) => {
                     ))
                 }
             </div>
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            <Pagination
+        currentPage={currentPage}
+        totalPages={maxPageNumber}
+        onPageChange={handlePageChange}
+        baseURL={location.pathname}
+      />
         </div>
     );
 }

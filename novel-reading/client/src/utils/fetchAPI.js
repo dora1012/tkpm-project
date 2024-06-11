@@ -47,10 +47,11 @@ export const fetchNovelInfo = async (
 
 export const fetchListResult = async (
   type, 
-  subitem
+  subitem,
+  currentPage
 ) => {
   try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}`);
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${type}/${subitem}/trang-${currentPage}`);
       return response;
   } catch (error) {
       console.error('Error fetching list result:', error);
@@ -59,10 +60,10 @@ export const fetchListResult = async (
 };
 
 export const fetchSearchResult = async (
-  query
+  query, currentPage
 ) => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/?tukhoa=${query}`);
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/tim-kiem/?tukhoa=${query}&page=${currentPage}`);
       return response;
   } catch (error) {
       console.error('Error fetching search result:', error);

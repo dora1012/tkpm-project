@@ -1,12 +1,12 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fetchPage = require('../utils/fetchPage');
-const { getMaxPaginationNumber} = require('../utils/pagination');
+const { getMaxPaginationNumber } = require('../utils/pagination');
 
 
 const crawlNovelList = async (url) => {
   try {
-    const html= await fetchPage(url);
+    const html = await fetchPage(url);
 
     const $ = cheerio.load(html);
     const novelList = [];
@@ -30,11 +30,11 @@ const crawlNovelList = async (url) => {
 };
 
 const crawlMaxPaginationNumber = async (url) => {
-try{
+  try {
     const maxNumber = await getMaxPaginationNumber(url);
     return maxNumber;
-}
-catch (error) {
+  }
+  catch (error) {
     console.error(`Error fetching max pagination num: ${error}`);
     throw new Error('Failed to fetch max pagination num');
   }
