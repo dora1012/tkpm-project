@@ -140,7 +140,7 @@ class TruyenFull extends Strategy {
         result.status = $('div.info h3:contains("Trạng thái:")')
             .next('span').text().trim();
 
-        result.description = $('div.desc-text[itemprop="description"]').text().trim();
+        result.description = $$('.desc-text.desc-text-full').html();
 
         result.rating = {
             score: $('span[itemprop="ratingValue"]').text().trim(),

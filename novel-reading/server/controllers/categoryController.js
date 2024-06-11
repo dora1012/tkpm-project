@@ -32,7 +32,9 @@ const getNovelListOfCategory = async (req, res) => {
     else{
       categoryUrl = `${defaultSource}/the-loai/${categorySlug}/${paginationSlug}/`;
     }
-    const novels = await crawler.crawl(categoryUrl, 'list');    res.json(novels);  
+    let novels = await crawler.crawl(categoryUrl, 'list');
+    novels.splice(5, 1);
+    res.json(novels);  
   } catch (error) {  
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error - NOVEL CATEGORY LIST CONTROLLER' });
