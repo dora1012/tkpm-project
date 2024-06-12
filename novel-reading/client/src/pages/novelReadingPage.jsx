@@ -24,7 +24,7 @@ const novelReadingPage = () => {
   const [novelData, setNovelData] = useState([]);
   const [maxPageNumber, setMaxPageNumber] = useState();
   const [chapterData, setChapterData] = useState([]);
-  const [serverOrder, setServerOrder] = useState(["truyenfull", "thichtruyen"]);
+  const [serverOrder, setServerOrder] = useState([]);
   const { slug, chapterNumber } = useParams();
   const [server, setServer] = useState("defaultSource");
   const navigate = useNavigate();

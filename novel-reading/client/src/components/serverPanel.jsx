@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 
 const serverPanel = ({ currentServer, onServerOrderChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [servers, setServers] = useState([
-    { id: "truyenfull", name: "Nguồn: Truyenfull" },
-    { id: "thichtruyen", name: "Nguồn: Thichtruyen" },
-  ]);
+  const [servers, setServers] = useState([]);
   const ref = useRef(null);
   const featureRef = useRef(null);
   const dragItem = useRef();
-  const dragOverItem = useRef();
+  const dragOverItem = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -30,29 +28,47 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
   }, []);
 
   useEffect(() => {
-    const savedOrder = JSON.parse(localStorage.getItem("serverOrder"));
-    if (savedOrder) {
-      const orderedServers = savedOrder.map(id => servers.find(server => server.id === id));
-      setServers(orderedServers);
-      onServerOrderChange(savedOrder);
-    }
-  }, []);
+    const fetchSourceServer = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
+        const fetchedServers = response.data;
+
+        // Chuyển đổi từ object sang mảng
+        const serversArray = Object.keys(fetchedServers).map(key => ({
+          id: key,
+          ...fetchedServers[key]
+        }));
+
+        const savedOrder = JSON.parse(localStorage.getItem("serverOrder"));
+        if (savedOrder) {
+          const orderedServers = savedOrder
+            .map(id => serversArray.find(server => server.id === id))
+            .filter(Boolean); // Remove undefined values
+          setServers(orderedServers);
+          onServerOrderChange(savedOrder);
+        } else {
+          const initialOrder = serversArray.map(server => server.id);
+          localStorage.setItem("serverOrder", JSON.stringify(initialOrder));
+          onServerOrderChange(initialOrder);
+          setServers(serversArray); // Set servers to the initial array if there's no saved order
+        }
+      } catch (error) {
+        console.error('Error fetching source:', error);
+      }
+    };
+
+    fetchSourceServer();
+  }, [onServerOrderChange]);
 
   const handleSort = () => {
-    // Duplicate items
     let _servers = [...servers];
 
-    // Remove and save the dragged item content
     const draggedItemContent = _servers.splice(dragItem.current, 1)[0];
-
-    // Switch the position
     _servers.splice(dragOverItem.current, 0, draggedItemContent);
 
-    // Reset the positions
     dragItem.current = null;
     dragOverItem.current = null;
 
-    // Update the list
     setServers(_servers);
     const newOrder = _servers.map(server => server.id);
     localStorage.setItem("serverOrder", JSON.stringify(newOrder));
@@ -73,11 +89,12 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
         <div
           ref={ref}
           className="absolute right-0 top-50 w-64 bg-white p-4 rounded-lg shadow-lg"
+          style={{ transform: 'translateY(-100%)' }}
         >
           <p className="text-2xl font-semibold mb-4">Sắp xếp độ ưu tiên</p>
           <p className="text-md font-semibold mb-4">(Kéo thả để sắp xếp)</p>
           <ul>
-            {servers.map((server, index) => (
+            {servers.length > 0 && servers.map((server, index) => (
               <li
                 key={server.id}
                 draggable
@@ -87,7 +104,7 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
                 onDragOver={(e) => e.preventDefault()}
                 className={`mb-2 p-2 rounded-md cursor-pointer text-coral-pink ${server.id === currentServer ? 'bg-grey' : ''}`}
               >
-                {server.name}
+                {server.id}: {server.url}
               </li>
             ))}
           </ul>
