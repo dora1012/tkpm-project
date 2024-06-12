@@ -93,7 +93,7 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
                 onDragOver={(e) => e.preventDefault()}
                 className={`mb-2 p-2 rounded-md cursor-pointer text-coral-pink ${server.id === currentServer ? 'bg-grey' : ''}`}
               >
-                {server.id}: {server.url}
+                {server.id}: {server.name}
               </li>
             ))}
           </ul>
