@@ -20,13 +20,17 @@ const novelReadingPage = () => {
   const extractLastChapterNumber = (chapter) => {
     const match = chapter.match(/Chương (\d+):/i);
     return match ? match[1] : null;
-};
+  };
   const [novelData, setNovelData] = useState([]);
   const [maxPageNumber, setMaxPageNumber] = useState();
   const [chapterData, setChapterData] = useState([]);
   const [serverOrder, setServerOrder] = useState([]);
   const { slug, chapterNumber } = useParams();
-  const [server, setServer] = useState("defaultSource");
+  const storedServerOrder = JSON.parse(localStorage.getItem('serverOrder'));
+  const initialServer = storedServerOrder ? storedServerOrder[0] : "truyenfull";
+  const [server, setServer] = useState(initialServer);
+  let serverIndex = 0;
+  //const [server, setServer] = useState("defaultSource");
   const navigate = useNavigate();
   const currentChapter = parseInt(extractChapterNumber(chapterNumber), 10);
   const prevMaxPageNumberRef = useRef();
@@ -37,18 +41,45 @@ const novelReadingPage = () => {
     console.log("New server order:", newOrder);
   };
 
-
+  const onServerClick = async (serverId) => {
+    try {
+      setServer(serverId);
+      const response = await axios.get(
+        import.meta.env.VITE_SERVER_DOMAIN +
+        "/api/" +
+        slug +
+        "/" +
+        chapterNumber +
+        "/" +
+        serverId
+      );
+      const data = response.data;
+      setNovelData(data);
+    } catch (error) {
+      console.error("Error fetching chapter content:", error);
+      //TODO: display error message
+      setNovelData([]); // should be an error message
+    }
+  };
 
   useEffect(() => {
     // Fetch novel list from backend
     const fetchNovelContent = async () => {
+      if (serverIndex >= serverOrder.length) {
+        console.error("No server available");
+        return;
+      }
       try {
+        const server = storedServerOrder[serverIndex];
+        setServer(server);
         const response = await axios.get(
           import.meta.env.VITE_SERVER_DOMAIN +
-            "/api/" +
-            slug +
-            "/" +
-            chapterNumber
+          "/api/" +
+          slug +
+          "/" +
+          chapterNumber + 
+          "/" +
+          server
         );
         const data = response.data;
         setNovelData(data);
@@ -64,27 +95,29 @@ const novelReadingPage = () => {
         localStorage.setItem(slug + "-last-read", chapterNumber);
       } catch (error) {
         console.error("Error fetching chapter content:", error);
+        serverIndex++;
+        await fetchNovelContent();
       }
     };
-  //   const fetchSourceServer = async() =>{
-  //     try {
-  //         const selectedServer = serverOrder[0];
-  //         const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
-  //         console.log(response.data);
-  //         setServer(selectedServer);
-  //         return;
-  //     } catch (error) {
-  //         console.error('Error fetching source:', error);
-  //     }
-  // }
+    //   const fetchSourceServer = async() =>{
+    //     try {
+    //         const selectedServer = serverOrder[0];
+    //         const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
+    //         console.log(response.data);
+    //         setServer(selectedServer);
+    //         return;
+    //     } catch (error) {
+    //         console.error('Error fetching source:', error);
+    //     }
+    // }
     // fetchSourceServer();
     fetchNovelContent();
-    
+
     const savedBookmark = getBookmark(slug);
     if (savedBookmark !== null) {
       setBookmarkedLine(savedBookmark);
     }
-  }, [slug, chapterNumber, maxPageNumber, serverOrder]); 
+  }, [slug, chapterNumber, maxPageNumber, serverOrder]);
 
   // Get settings from local storage
 
@@ -168,21 +201,21 @@ const novelReadingPage = () => {
         <p className="text-smoke">{novelData.chapterTitle}</p>
       </div>
       <div className="w-9/12 border border-grey mx-auto mt-5"></div>
-      
-      <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters}/>
+
+      <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters} />
       <div className="prose max-w-none w-9/12 mx-auto">
         <div style={{ lineHeight: `${lineSpacing}` }}>
           {renderContentWithBookmarks()}
         </div>
       </div>
-      <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters}/>
+      <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters} />
       <div className="flex flex-col fixed top-1/3 right-20 transform -translate-y-1/2 z-50 gap-10">
         <ExportSettingsPanel
-            chapterContent={novelData.chapterContent || ""}
-            novelTitle={novelData.novelTitle || ""}
-            chapterTitle={novelData.chapterTitle || ""}
-            author={""}
-          />
+          chapterContent={novelData.chapterContent || ""}
+          novelTitle={novelData.novelTitle || ""}
+          chapterTitle={novelData.chapterTitle || ""}
+          author={""}
+        />
         <SettingPanel
           onChangeBackground={setBackground}
           onChangeFontStyle={setFontStyle}
@@ -193,10 +226,10 @@ const novelReadingPage = () => {
           currentFontSize={fontSize}
           currentLineSpacing={lineSpacing}
         />
-        
-        <ServerPanel currentServer={server} onServerOrderChange={handleServerOrderChange}/>
+
+        <ServerPanel currentServer={server} onServerOrderChange={handleServerOrderChange} onServerClick={onServerClick} />
       </div>
-      
+
     </div>
   );
 };
