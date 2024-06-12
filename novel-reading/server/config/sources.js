@@ -1,11 +1,9 @@
 module.exports = {
-    server1:{
-        name:'truyenfull',
+    truyenfull:{
         url:'https://truyenfull.vn',
     },
-    server2:{
-        name:'tangthuvien',
-        url:'https://truyen.tangthuvien.vn'
+    tangthuvien:{
+        url:'https://truyen.tangthuvien.vn/'
     },
     defaultSource: 'https://truyenfull.vn'
 }

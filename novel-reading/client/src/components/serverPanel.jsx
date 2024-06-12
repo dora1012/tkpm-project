@@ -33,32 +33,23 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
         const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
         const fetchedServers = response.data;
 
-        // Chuyển đổi từ object sang mảng
-        const serversArray = Object.keys(fetchedServers).map(key => ({
-          id: key,
-          ...fetchedServers[key]
-        }));
+        // Chuyển đổi từ object sang mảng và bỏ qua defaultSource
+        const serversArray = Object.keys(fetchedServers)
+          .filter(key => key !== 'defaultSource')
+          .map(key => ({
+            id: key,
+            ...fetchedServers[key]
+          }));
 
-        const savedOrder = JSON.parse(localStorage.getItem("serverOrder"));
-        if (savedOrder) {
-          const orderedServers = savedOrder
-            .map(id => serversArray.find(server => server.id === id))
-            .filter(Boolean); // Remove undefined values
-          setServers(orderedServers);
-          onServerOrderChange(savedOrder);
-        } else {
-          const initialOrder = serversArray.map(server => server.id);
-          localStorage.setItem("serverOrder", JSON.stringify(initialOrder));
-          onServerOrderChange(initialOrder);
-          setServers(serversArray); // Set servers to the initial array if there's no saved order
-        }
+        setServers(serversArray);
+        onServerOrderChange(serversArray.map(server => server.id));
       } catch (error) {
         console.error('Error fetching source:', error);
       }
     };
 
     fetchSourceServer();
-  }, [onServerOrderChange]);
+  }, []);
 
   const handleSort = () => {
     let _servers = [...servers];
@@ -70,13 +61,11 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
     dragOverItem.current = null;
 
     setServers(_servers);
-    const newOrder = _servers.map(server => server.id);
-    localStorage.setItem("serverOrder", JSON.stringify(newOrder));
-    onServerOrderChange(newOrder);
+    onServerOrderChange(_servers.map(server => server.id));
   };
 
   return (
-    <div className="">
+    <div>
       <button
         ref={featureRef}
         onClick={() => setIsOpen(!isOpen)}

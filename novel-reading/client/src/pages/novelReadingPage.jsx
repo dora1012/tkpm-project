@@ -66,18 +66,18 @@ const novelReadingPage = () => {
         console.error("Error fetching chapter content:", error);
       }
     };
-    const fetchSourceServer = async() =>{
-      try {
-          const selectedServer = serverOrder[0];
-          const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
-          console.log(response.data);
-          setServer(selectedServer);
-          return;
-      } catch (error) {
-          console.error('Error fetching source:', error);
-      }
-  }
-    fetchSourceServer();
+  //   const fetchSourceServer = async() =>{
+  //     try {
+  //         const selectedServer = serverOrder[0];
+  //         const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
+  //         console.log(response.data);
+  //         setServer(selectedServer);
+  //         return;
+  //     } catch (error) {
+  //         console.error('Error fetching source:', error);
+  //     }
+  // }
+    // fetchSourceServer();
     fetchNovelContent();
     
     const savedBookmark = getBookmark(slug);
