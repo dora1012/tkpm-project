@@ -22,7 +22,7 @@ const novelReadingPage = () => {
     return match ? match[1] : null;
   };
   const [novelData, setNovelData] = useState([]);
-  const [maxPageNumber, setMaxPageNumber] = useState();
+  const [totalChapters, setTotalChapters] = useState();
   const [chapterData, setChapterData] = useState([]);
   const [serverOrder, setServerOrder] = useState([]);
   const { slug, chapterNumber } = useParams();
@@ -99,25 +99,24 @@ const novelReadingPage = () => {
         await fetchNovelContent();
       }
     };
-    //   const fetchSourceServer = async() =>{
-    //     try {
-    //         const selectedServer = serverOrder[0];
-    //         const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/nguon`);
-    //         console.log(response.data);
-    //         setServer(selectedServer);
-    //         return;
-    //     } catch (error) {
-    //         console.error('Error fetching source:', error);
-    //     }
-    // }
-    // fetchSourceServer();
+
+    const fetchTotalChapters = async()=>{
+      try{
+          const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/api/${slug}/max-chuong`);
+          setTotalChapters(response.data);
+      }
+      catch(error){
+          console.error("Failed to fetch max page number: ",error);
+      }
+    };
+    fetchTotalChapters();
     fetchNovelContent();
 
     const savedBookmark = getBookmark(slug);
     if (savedBookmark !== null) {
       setBookmarkedLine(savedBookmark);
     }
-  }, [slug, chapterNumber, maxPageNumber, serverOrder]);
+  }, [slug, chapterNumber, serverOrder]);
 
   // Get settings from local storage
 
@@ -190,7 +189,7 @@ const novelReadingPage = () => {
       </div>
     ));
   }
-  const totalChapters = 100;
+  // const totalChapters = 100;
   return (
     <div
       className={`container mx-auto p-8 w-full shadow ${textColor}`}

@@ -3,7 +3,7 @@
 // const { crawlNovelInfo } = require('../services/crawlNovelInforPage')
 // const { crawlMaxPaginationNumber } = require('../services/crawlListPage');
 const { defaultSource } = require('../config/sources');
-const { processChapterTitles } = require('../utils/processChapter');
+const  {processChapterTitles}  = require('../utils/processChapter');
 
 const Crawler = require('../services/crawler');
 const TruyenFull = require('../services/crawlerTruyenFull');
@@ -56,7 +56,7 @@ const getAllChapters = async (req, res) => {
     const { novelSlug } = req.params;
     const url = `${defaultSource}/${novelSlug}/`
     let chapterList = await crawler.crawlWithAsyncHandles(url, 'all-chapters');
-    chapterList = processChapterTitles(chapterList);
+    chapterList = await processChapterTitles(chapterList);
     res.json(chapterList);
   } catch (error) {
     console.error(error);

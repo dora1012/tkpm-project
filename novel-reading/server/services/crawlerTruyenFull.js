@@ -240,19 +240,20 @@ class TruyenFull extends Strategy {
         return chapterList;
     }
     async extractMaxChapterNumber(url) {
-        let chapterList = [];
-        let maxPage = await pagination.getMaxPaginationNumber(url);
-        var novelUrl = `${url}trang-${maxPage}/`;
-        let htmlData = await fetchPage(novelUrl);
-        let $ = cheerio.load(htmlData);
-        $('#list-chapter ul.list-chapter li a').each((index, element) => {
-            chapterList.push($(element).text().trim());
-        });
-        let lastChapter= chapterList[chapterList.length - 1];
-        let lastChapterList= [lastChapter]
-        lastChapterList = processChapterTitles(lastChapterList);        
-        return lastChapterList[0];
-    }
+  let chapterList = [];
+  let maxPage = await pagination.getMaxPaginationNumber(url);
+  let novelUrl = `${url}trang-${maxPage}/`;
+  let htmlData = await fetchPage(novelUrl);
+  let $ = cheerio.load(htmlData);
+  $('#list-chapter ul.list-chapter li a').each((index, element) => {
+    chapterList.push($(element).text().trim());
+  });
+
+  let lastChapter = chapterList[chapterList.length - 1];
+  let lastChapterList = [lastChapter];
+  lastChapterList = await processChapterTitles(lastChapterList);
+  return lastChapterList[0];
+}
 
 }
 
