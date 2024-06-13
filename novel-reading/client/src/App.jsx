@@ -19,6 +19,7 @@ const App = () => {
                     <Route path="danh-sach/:subitem" element={<NovelListPage type="danh-sach" />} />
                     <Route path="the-loai/:subitem" element={<NovelListPage type="the-loai" />} />
                     <Route path="phan-loai/:subitem" element={<NovelListPage type="phan-loai" />} />
+                    <Route path="tac-gia/:subitem" element={<NovelListPage type="tac-gia" />} />
                 </Route>
         </Routes>
         

@@ -28,9 +28,14 @@ class TangThuVien extends Strategy {
        
         // Extract the chapter content
         let content = $('.box-chap').html().trim();
-		content = content.replace(/<\/p>/g, '</p>\n').replace(/<br\s*\/?>/g, '<br>\n');
+		// Thêm dấu xuống dòng sau mỗi thẻ </p> và <br>
+        content = content.replace(/<\/p>/g, '</p>\n').replace(/<br\s*\/?>/g, '<br>\n');
+
         // Xóa các thẻ HTML nhưng giữ lại dấu xuống dòng
         content = content.replace(/<\/?[^>]+(>|$)/g, "");
+
+        // Thêm dấu xuống dòng sau mỗi dấu chấm câu (dấu chấm, dấu hỏi, dấu chấm than)
+        content = content.replace(/([.!?])\s*(?=[A-ZÀ-Ỳ])/g, ".<br>\n<br>\n")
 		result.chapterContent = content;
         return result;
     }

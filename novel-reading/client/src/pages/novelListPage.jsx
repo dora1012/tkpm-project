@@ -73,7 +73,15 @@ const novelListPage = ({type}) => {
                                     <div className="flex">
                                         <p className="font-semibold">{novel.title}</p>
                                     </div>
-                                    <p className="text-md">{novel.authors}</p>
+                                    <span>
+                                        <Link
+                                            to={`/tac-gia/${slugify(novel.authors.toString())}`}
+                                            className="py-2 px-1 text-center hover:text-coral-pink mr-auto"
+                                        >
+                                            {novel.authors}
+                                        </Link>
+                                    </span>
+                                    
                                     <span>
                                         Đọc chương hiện tại:{' '}
                                         <Link
