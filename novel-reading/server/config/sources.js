@@ -1,4 +1,6 @@
 const TruyenFull = require('../services/crawlerTruyenFull');
+const TangThuVien = require('../services/crawlerTangThuVien');
+
 const chokidar = require('chokidar');
 const path = require('path');
 
@@ -23,8 +25,8 @@ module.exports = {
     },
     server2:{
         name: 'tangthuvien',
-        url:'https://truyen.tangthuvien.vn',
-        crawler: new Strategy()
+        url:'https://truyen.tangthuvien.vn/doc-truyen',
+        crawler: new TangThuVien()
     },
     defaultSource: 'https://truyenfull.vn'
 }
