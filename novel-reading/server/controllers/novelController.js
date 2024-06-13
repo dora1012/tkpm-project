@@ -63,6 +63,18 @@ const getAllChapters = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error - NOVEL CONTROLLER - CHAPTER LIST' });
   }
 };
+// get max chapter of novel
+const getMaxChapter = async (req, res) => {
+  try {
+    const { novelSlug } = req.params;
+    const url = `${defaultSource}/${novelSlug}/`
+    let maxChapter = await crawler.crawlWithAsyncHandles(url, 'max-chapter');
+    res.json(maxChapter);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error - NOVEL CONTROLLER - MAX CHAPTER' });
+  }
+};
 
 // get chapter list for each pagination page
 const getChapterListForEachPagination = async (req, res) => {
@@ -98,6 +110,7 @@ module.exports = {
   getTruyenDaHoanThanh,
   getNovelInfor,
   getAllChapters,
+  getMaxChapter,
   getChapterListForEachPagination,
   getMaxPaginationNumber
 };
