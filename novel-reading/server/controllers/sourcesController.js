@@ -1,4 +1,20 @@
-const source = require('../config/sources.js');
+let source = require('../config/sources.js');
+const chokidar = require('chokidar');
+const path = require('path');
+
+const sourcesPath = path.join(__dirname, '../config/sources.js');
+const watcher = chokidar.watch(sourcesPath, {
+    ignored: /(^|[\/\\])\../,
+    persistent: true,
+    ignoreInitial: true
+});
+
+watcher.on('change', function (path) {
+    console.log(`File ${path} has been changed`);
+    delete require.cache[require.resolve('../config/sources.js')];
+    source = require('../config/sources.js');
+});
+
 
 const getAllSources = (req, res) => {
     try {
