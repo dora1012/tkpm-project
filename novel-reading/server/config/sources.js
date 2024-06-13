@@ -5,7 +5,7 @@ module.exports = {
     },
     server2:{
         name: 'tangthuvien',
-        url:'https://truyen.tangthuvien.vn/'
+        url:'https://truyen.tangthuvien.vn'
     },
     defaultSource: 'https://truyenfull.vn'
 }
