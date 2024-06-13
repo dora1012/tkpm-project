@@ -99,8 +99,8 @@ const serverPanel = ({ currentServer, onServerOrderChange, onServerClick }) => {
           className="absolute right-0 top-50 w-64 bg-white p-4 rounded-lg shadow-lg"
           style={{ transform: 'translateY(-100%)' }}
         >
-          <p className="text-2xl font-semibold mb-4">Sắp xếp độ ưu tiên</p>
-          <p className="text-md font-semibold mb-4">(Kéo thả để sắp xếp)</p>
+          <p className="text-2xl font-semibold mb-4 text-black">Sắp xếp độ ưu tiên</p>
+          <p className="text-md font-semibold mb-4 text-black">(Kéo thả để sắp xếp)</p>
           <ul>
             {servers.length > 0 && servers.map((server, index) => (
               <li

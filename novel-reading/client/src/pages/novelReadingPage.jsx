@@ -194,7 +194,7 @@ const novelReadingPage = () => {
   return (
     <div
       className={`container mx-auto p-8 w-full shadow ${textColor}`}
-      style={{ backgroundColor: background, fontFamily: fontStyle }}
+      style={{ backgroundColor: background}}
     >
       <div className="flex flex-col items-center justify-center gap-6">
         <h1 className="text-3xl font-bold mx-auto">{novelData.novelTitle}</h1>
@@ -204,7 +204,7 @@ const novelReadingPage = () => {
 
       <ChapterNavigation novelTitle={novelData.novelTitle} currentChapter={currentChapter} totalChapters={totalChapters} />
       <div className="prose max-w-none w-9/12 mx-auto">
-        <div style={{ lineHeight: `${lineSpacing}` }}>
+        <div style={{ lineHeight: `${lineSpacing}`, fontFamily: `${fontStyle}` }}>
           {renderContentWithBookmarks()}
         </div>
       </div>

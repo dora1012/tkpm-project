@@ -2,6 +2,7 @@ const Strategy = require('./crawlerStrategy');
 const pagination = require('../utils/pagination');
 const puppeteer = require('puppeteer');
 const fetchPage = require('../utils/fetchPage');
+const {processChapterTitles} = require('../utils/processChapter');
 const cheerio = require('cheerio');
 
 class TruyenFull extends Strategy {
@@ -183,6 +184,8 @@ class TruyenFull extends Strategy {
                 return await this.extractChapterPPT(url);
             case 'all-chapters':
                 return await this.extractAllChapters(url);
+            case 'max-chapter':
+                return await this.extractMaxChapterNumber(url);
             default:
                 throw new Error('Invalid type');
         }
@@ -214,7 +217,7 @@ class TruyenFull extends Strategy {
         return detailTruyen;
     }
 
-    async extractAllChapters(url) {
+    async extractAllChapters(novelUrl) {
         let chapterList = [];
         let currentPage = 1;
         let hasNextPage = true;
@@ -235,6 +238,20 @@ class TruyenFull extends Strategy {
             currentPage++;
         }
         return chapterList;
+    }
+    async extractMaxChapterNumber(url) {
+        let chapterList = [];
+        let maxPage = await pagination.getMaxPaginationNumber(url);
+        var novelUrl = `${url}trang-${maxPage}/`;
+        let htmlData = await fetchPage(novelUrl);
+        let $ = cheerio.load(htmlData);
+        $('#list-chapter ul.list-chapter li a').each((index, element) => {
+            chapterList.push($(element).text().trim());
+        });
+        let lastChapter= chapterList[chapterList.length - 1];
+        let lastChapterList= [lastChapter]
+        lastChapterList = processChapterTitles(lastChapterList);        
+        return lastChapterList[0];
     }
 
 }

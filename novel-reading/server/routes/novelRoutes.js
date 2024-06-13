@@ -13,6 +13,8 @@ router.get('/truyen-da-hoan-thanh', novelController.getTruyenDaHoanThanh);
 router.get('/:novelSlug/danh-sach-chuong', novelController.getAllChapters);
 // lấy số trang max của truyện
 router.get('/:novelSlug/max-trang', novelController.getMaxPaginationNumber);
+// lấy số chương max của truyện
+router.get('/:novelSlug/max-chuong',novelController.getMaxChapter);
 // lấy thông tin truyện theo trang
 router.get('/:novelSlug/trang-:paginationSlug',novelController.getNovelInfor);
 // lấy thông tin chương
