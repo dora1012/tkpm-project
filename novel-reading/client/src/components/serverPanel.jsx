@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-const serverPanel = ({ currentServer, onServerOrderChange }) => {
+const serverPanel = ({ currentServer, onServerOrderChange, onServerClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [servers, setServers] = useState([]);
   const ref = useRef(null);
@@ -41,6 +41,23 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
             ...fetchedServers[key]
           }));
 
+        // Load server order from localStorage
+        const serverOrder = JSON.parse(localStorage.getItem('serverOrder'));
+
+        if (serverOrder) {
+          // Convert both lists to sets for comparison
+          const fetchedSet = new Set(serversArray.map(server => server.id));
+          const storedSet = new Set(serverOrder);
+
+          // If the sets are equal, sort the fetched list by the stored order
+          if (Array.from(fetchedSet).every(value => storedSet.has(value))) {
+            serversArray.sort((a, b) => serverOrder.indexOf(a.id) - serverOrder.indexOf(b.id));
+          } else {
+            // If the sets are not equal, update localStorage with the fetched list
+            localStorage.setItem('serverOrder', JSON.stringify(serversArray.map(server => server.id)));
+          }
+        }
+
         setServers(serversArray);
         onServerOrderChange(serversArray.map(server => server.id));
       } catch (error) {
@@ -51,7 +68,7 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
     fetchSourceServer();
   }, []);
 
-  const handleSort = () => {
+  const handleSort = async () => {
     let _servers = [...servers];
 
     const draggedItemContent = _servers.splice(dragItem.current, 1)[0];
@@ -62,6 +79,8 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
 
     setServers(_servers);
     onServerOrderChange(_servers.map(server => server.id));
+
+    await onServerClick(draggedItemContent.id);
   };
 
   return (
@@ -91,7 +110,8 @@ const serverPanel = ({ currentServer, onServerOrderChange }) => {
                 onDragEnter={() => (dragOverItem.current = index)}
                 onDragEnd={handleSort}
                 onDragOver={(e) => e.preventDefault()}
-                className={`mb-2 p-2 rounded-md cursor-pointer text-coral-pink ${server.id === currentServer ? 'bg-grey' : ''}`}
+                onClick={async () => await onServerClick(server.id)}
+                className={`mb-2 p-2 rounded-md cursor-pointer text-coral-pink ${(server.name === currentServer || server.id === currentServer) ? 'bg-grey' : ''}`}
               >
                 {server.id}: {server.name}
               </li>

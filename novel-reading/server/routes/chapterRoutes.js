@@ -12,5 +12,7 @@ router.get('/:novelSlug/danh-sach-chuong', novelController.getAllChapters);
 router.get('/:novelSlug/trang-:paginationSlug',novelController.getNovelInfor);
 // lấy thông tin chương
 router.get('/:novelSlug/chuong-:chapterSlug', chapterController.getChapter);
+// lấy thông tin chương theo nguồn
+router.get('/:novelSlug/chuong-:chapterSlug/:source', chapterController.getChapter);
 
 module.exports = router;
