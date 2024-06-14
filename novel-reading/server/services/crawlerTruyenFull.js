@@ -43,6 +43,9 @@ class TruyenFull extends Strategy {
 
             result.push({ title, image });
         });
+        if (result.length > 16) {
+            result = result.slice(0, 16);
+        }
         return result;
     }
 
