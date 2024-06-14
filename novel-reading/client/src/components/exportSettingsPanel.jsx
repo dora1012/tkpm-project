@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from 'axios'
 import { createEbook } from "../utils/fetchAPI";
 
 const ExportSettingsPanel = ({
@@ -11,7 +12,27 @@ const ExportSettingsPanel = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [formats, setFormats] = useState([]);
   const ref = useRef();
+
+  useEffect(() => {
+    // Fetch the list of ebook formats from the backend
+    const fetchFormats = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_SERVER_DOMAIN + "/api/ebook-formats"
+        );
+        console.log(response.data);
+        if (response.data && Array.isArray(response.data.formats)) {
+          setFormats(response.data.formats);
+        }
+      } catch (error) {
+        console.error('Error fetching ebook formats:', error);
+      }
+    };
+
+    fetchFormats();
+  }, []);
 
   const handleExport = async (event) => {
     // event.preventDefault();
@@ -81,8 +102,11 @@ const ExportSettingsPanel = ({
             onChange={(e) => setExportType(e.target.value)}
             value={type}
           >
-            <option value="pdf">PDF</option>
-            <option value="epub">EPUB</option>
+            {formats.map((format, index) => (
+              <option key={index} value={format}>
+                {format.toUpperCase()}
+              </option>
+            ))}
           </select>
           <button
             onClick={handleExport}

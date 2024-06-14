@@ -7,7 +7,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const getLastPageLink = (paginationHtml) => {
   const $ = cheerio.load(paginationHtml);
   const lastPageLink = $('ul.pagination li:contains("Cuối") a').attr('href');
-  console.log(`Last page link found: ${lastPageLink}`);
+  //console.log(`Last page link found: ${lastPageLink}`);
   return lastPageLink;
 };
 
@@ -62,7 +62,7 @@ const getMaxPaginationNumber = async (url) => {
     } else {
       lastPageNumber= await getMaxPaginationByNext(url);
     }
-    console.log('Max Page:', lastPageNumber);
+    //console.log('Max Page:', lastPageNumber);
     return lastPageNumber;
   } catch (error) {
     console.error(`Error fetching List Max: ${error.message}`);

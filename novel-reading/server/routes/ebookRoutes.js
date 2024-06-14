@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const ebookController = require("../controllers/ebookController");
-
+const { addFormat, readFormats } = require('../services/ebookFormats');
 function encodeRFC5987ValueChars(str) {
   return encodeURIComponent(str).
       // Lưu ý: Mặc dù RFC3986 yêu cầu mã hóa dấu ngoặc nhọn,
@@ -19,7 +19,7 @@ router.get("/download-ebook/:filename", (req, res) => {
   let { filename } = req.params;
   filename = decodeURIComponent(filename);
   
-  const filePath = path.join(__dirname, '../output', filename);
+  const filePath = path.join(__dirname, '..', 'output', filename);
   // const headerValue = `attachment; filename*=UTF-8''${filename}`;
   const headerValue = `attachment; filename*=UTF-8''${encodeRFC5987ValueChars(filename)}`;
 
@@ -35,4 +35,8 @@ router.get("/download-ebook/:filename", (req, res) => {
   });
 });
 
+router.get("/ebook-formats", (req, res) => {
+  const formats = readFormats();
+  res.json({ formats });
+});
 module.exports = router;
