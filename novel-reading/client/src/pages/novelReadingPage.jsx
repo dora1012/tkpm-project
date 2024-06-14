@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { slugify } from "../utils/slugify";
 import SettingPanel from "../components/settingPanel";
@@ -196,7 +196,12 @@ const novelReadingPage = () => {
       style={{ backgroundColor: background}}
     >
       <div className="flex flex-col items-center justify-center gap-6">
-        <h1 className="text-3xl font-bold mx-auto">{novelData.novelTitle}</h1>
+      <Link
+                    to={`/${slugify(novelData.novelTitle)}`}
+                    className="font-bold text-3xl hover:text-coral-pink mx-auto"
+                  >
+                    {novelData.novelTitle}
+      </Link>
         <p className="text-smoke">{novelData.chapterTitle}</p>
       </div>
       <div className="w-9/12 border border-grey mx-auto mt-5"></div>
