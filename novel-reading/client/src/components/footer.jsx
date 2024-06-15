@@ -7,8 +7,8 @@ const footer = () => {
         {/* Company Information Section */}
         <div className="space-y-2">
           <h3 className="font-semibold">THÔNG TIN</h3>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit</p>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Architecto possimus, quidem quis fugiat dolorem quo.</p>
+          <p>Trường Đại Học Khoa Học Tự Nhiên - DHQG HCM</p>
+          <p>Đây là đồ án xây dựng website đọc truyện online của nhóm Marknet cho môn học Thiết kế phần mềm</p>
           <h3 className="font-semibold">LIÊN HỆ</h3>
           <p>Email: masknet1122@gmail.com</p>
           <p>@copyright 2024. Masknet Ltd. All rights reserved</p>
